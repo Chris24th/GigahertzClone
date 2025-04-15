@@ -1,149 +1,115 @@
 import React from 'react';
-import { FiFacebook, FiInstagram, FiYoutube, FiTwitter } from 'react-icons/fi';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { FaFacebook, FaInstagram, FaTiktok, FaYoutube } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
-export default function GigahertzFooter() {
-    const currentYear = new Date().getFullYear();
-
+const Footer = () => {
     return (
-        <footer className="bg-dark text-white pt-5">
-            {/* Footer Top Section */}
+        <footer className="bg-light py-5">
             <div className="container">
-                <div className="row mb-4">
-                    {/* Company Info */}
-                    <div className="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <h5 className="text-uppercase mb-4 fw-bold">Gigahertz</h5>
-                        <p className="small mb-4">
-                            Your trusted partner for electronics repair and service across the Philippines.
-                            Bringing quality repair services for all your devices since 1995.
-                        </p>
-                        <div className="d-flex mb-4">
-                            <a href="#" className="text-white me-3">
-                                <FiFacebook size={24} />
-                            </a>
-                            <a href="#" className="text-white me-3">
-                                <FiInstagram size={24} />
-                            </a>
-                            <a href="#" className="text-white me-3">
-                                <FiYoutube size={24} />
-                            </a>
-                            <a href="#" className="text-white">
-                                <FiTwitter size={24} />
-                            </a>
-                        </div>
-                    </div>
-
-                    {/* Quick Links */}
-                    <div className="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <h5 className="text-uppercase mb-4 fw-bold">Quick Links</h5>
+                <div className="d-flex justify-content-between flex-wrap">
+                    {/* OUR COMPANY Column */}
+                    <div className="col-6 col-lg-3">
+                        <h5 className="text-primary fw-bold mb-4">OUR COMPANY</h5>
                         <ul className="list-unstyled">
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Home</a>
+                                <Link to="/about-us" className="text-dark text-decoration-none">About Us</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">About Us</a>
+                                <Link to="/blogs" className="text-dark text-decoration-none">Blogs</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Products</a>
+                                <Link to="/branches" className="text-dark text-decoration-none">Branches</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Services</a>
+                                <Link to="/careers" className="text-dark text-decoration-none">Careers</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Contact Us</a>
+                                <Link to="/contact-us" className="text-dark text-decoration-none">Contact Us</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Career</a>
+                                <Link to="/promos" className="text-dark text-decoration-none">Promos</Link>
+                            </li>
+                            <li className="mb-2">
+                                <Link to="/terms" className="text-dark text-decoration-none">
+                                    <span className="text-danger">*</span>Terms and Conditions Apply
+                                </Link>
                             </li>
                         </ul>
                     </div>
 
-                    {/* Services */}
-                    <div className="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <h5 className="text-uppercase mb-4 fw-bold">Services</h5>
+                    {/* SUPPORT AND SERVICES Column */}
+                    <div className="col-6 col-lg-3">
+                        <h5 className="text-primary fw-bold mb-4">SUPPORT AND SERVICES</h5>
                         <ul className="list-unstyled">
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Repair Services</a>
+                                <Link to="/delivery" className="text-dark text-decoration-none">Delivery</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Maintenance</a>
+                                <Link to="/track-repair" className="text-dark text-decoration-none">Track My Repair</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Warranty Claims</a>
+                                <Link to="/repair-and-service" className="text-dark text-decoration-none">Repair and Service</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Diagnostics</a>
+                                <Link to="/return-refund" className="text-dark text-decoration-none">Return and Refund Policies</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Trade-in</a>
+                                <Link to="/terms-conditions" className="text-dark text-decoration-none">Terms and Conditions</Link>
                             </li>
                             <li className="mb-2">
-                                <a href="#" className="text-white text-decoration-none">Parts & Accessories</a>
+                                <Link to="/privacy-policy" className="text-dark text-decoration-none">Privacy Policy</Link>
                             </li>
                         </ul>
                     </div>
+                </div>
 
-                    {/* Contact Information */}
-                    <div className="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                        <h5 className="text-uppercase mb-4 fw-bold">Contact Us</h5>
-                        <p className="small mb-2">
-                            <strong>Head Office:</strong><br />
-                            123 Main Street, Makati City<br />
-                            Metro Manila, Philippines 1200
-                        </p>
-                        <p className="small mb-2">
-                            <strong>Phone:</strong><br />
-                            (02) 8123-4567
-                        </p>
-                        <p className="small mb-2">
-                            <strong>Email:</strong><br />
-                            support@gigahertz.com.ph
-                        </p>
-                        <p className="small mb-0">
-                            <strong>Business Hours:</strong><br />
-                            Monday-Saturday: 9:00 AM - 6:00 PM
+                {/* Copyright and Social Media */}
+                <div className="row mt-5">
+                    <div className="col-md-6">
+                        <p className="mb-0">© 2025 Gigahertz</p>
+                        <p className="mb-0">
+                            Powered by{' '}
+                            <a href="https://claude.ai" className="text-dark">
+                                AI
+                            </a>
                         </p>
                     </div>
-                </div>
-            </div>
-
-            {/* Footer Newsletter */}
-            <div className="bg-black py-4">
-                <div className="container">
-                    <div className="row align-items-center">
-                        <div className="col-md-6 mb-3 mb-md-0">
-                            <h5 className="mb-0">Subscribe to our newsletter</h5>
-                            <p className="small mb-0">Get the latest updates on products, services, and promotions.</p>
-                        </div>
-                        <div className="col-md-6">
-                            <form className="d-flex">
-                                <input
-                                    type="email"
-                                    className="form-control me-2"
-                                    placeholder="Your Email Address"
-                                    aria-label="Email"
-                                />
-                                <button className="btn btn-primary" type="submit">Subscribe</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Footer Copyright */}
-            <div className="bg-black py-3 border-top border-secondary">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-md-6 text-center text-md-start">
-                            <p className="small mb-0">
-                                &copy; {currentYear} Gigahertz. All Rights Reserved.
-                            </p>
-                        </div>
-                        <div className="col-md-6 text-center text-md-end">
-                            <div className="d-inline-flex">
-                                <a href="#" className="text-white text-decoration-none small me-3">Privacy Policy</a>
-                                <a href="#" className="text-white text-decoration-none small me-3">Terms of Service</a>
-                                <a href="#" className="text-white text-decoration-none small">Sitemap</a>
+                    <div className="col-md-6">
+                        <div className="d-flex justify-content-md-end align-items-center">
+                            <p className="mb-0 me-3">Follow Us</p>
+                            <div className="d-flex">
+                                <a href="https://facebook.com" className="me-2" aria-label="Facebook">
+                                    <div
+                                        className="bg-secondary rounded-circle d-flex justify-content-center align-items-center"
+                                        style={{ width: '40px', height: '40px' }}
+                                    >
+                                        <FaFacebook className="text-white" />
+                                    </div>
+                                </a>
+                                <a href="https://instagram.com" className="me-2" aria-label="Instagram">
+                                    <div
+                                        className="bg-secondary rounded-circle d-flex justify-content-center align-items-center"
+                                        style={{ width: '40px', height: '40px' }}
+                                    >
+                                        <FaInstagram className="text-white" />
+                                    </div>
+                                </a>
+                                <a href="https://youtube.com" className="me-2" aria-label="YouTube">
+                                    <div
+                                        className="bg-secondary rounded-circle d-flex justify-content-center align-items-center"
+                                        style={{ width: '40px', height: '40px' }}
+                                    >
+                                        <FaYoutube className="text-white" />
+                                    </div>
+                                </a>
+                                <a href="https://tiktok.com" aria-label="TikTok">
+                                    <div
+                                        className="bg-secondary rounded-circle d-flex justify-content-center align-items-center"
+                                        style={{ width: '40px', height: '40px' }}
+                                    >
+                                        <FaTiktok className="text-white" />
+                                    </div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -151,4 +117,6 @@ export default function GigahertzFooter() {
             </div>
         </footer>
     );
-}
+};
+
+export default Footer;

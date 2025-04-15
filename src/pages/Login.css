@@ -1,0 +1,121 @@
+.auth-page {
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  padding: 40px 0;
+}
+
+.auth-card {
+  border: none;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  color: #6c757d;
+  font-weight: 600;
+  padding: 1rem;
+  cursor: pointer;
+  background-color: #f1f1f1;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link.active {
+  color: #212529;
+  background-color: #fff;
+  border-bottom: 3px solid #007bff;
+}
+
+.form-label {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  padding: 0.75rem 1rem;
+  border-color: #ced4da;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary:hover {
+  background-color: #0069d9;
+  border-color: #0062cc;
+}
+
+.btn-outline-secondary {
+  color: #6c757d;
+  border-color: #ced4da;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.btn-link {
+  color: #007bff;
+  font-size: 0.9rem;
+}
+
+.btn-facebook {
+  background-color: #3b5998;
+  border-color: #3b5998;
+  color: white;
+}
+
+.btn-facebook:hover {
+  background-color: #2d4373;
+  border-color: #2d4373;
+  color: white;
+}
+
+.btn-google {
+  background-color: #ea4335;
+  border-color: #ea4335;
+  color: white;
+}
+
+.btn-google:hover {
+  background-color: #d62516;
+  border-color: #d62516;
+  color: white;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: #6c757d;
+}
+
+.separator::before,
+.separator::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.separator span {
+  padding: 0 0.75rem;
+  font-size: 0.85rem;
+  background-color: #fff;
+}
+
+@media (max-width: 576px) {
+  .card-body {
+    padding: 1.5rem;
+  }
+}

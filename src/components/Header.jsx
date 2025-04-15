@@ -6,6 +6,7 @@ const Header = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isCartOpen, setIsCartOpen] = useState(false); // State for cart popup
 
     // Handle scroll effect
     useEffect(() => {
@@ -26,6 +27,10 @@ const Header = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
+    const toggleCart = () => {
+        setIsCartOpen(!isCartOpen);
+    };
+
     // Handle search
     const handleSearch = (e) => {
         e.preventDefault();
@@ -34,7 +39,7 @@ const Header = () => {
     };
 
     return (
-        <header className={`site-header ${isScrolled ? 'shadow-sm py-2' : 'py-3'}`}>
+        <header className={`site-header bg-primary`}>
             <div className="container">
                 <nav className="navbar navbar-expand-lg">
                     <div className="container-fluid px-0">
@@ -95,17 +100,41 @@ const Header = () => {
 
                         {/* User Actions */}
                         <div className={`align-items-center ${isMenuOpen ? 'd-none' : 'd-flex '}`}>
-                            <a href="/account" className="nav-link text-center">
+                            <a href="/Login" className="nav-link text-center">
                                 <FaUser className="fs-5 text-dark" />
                                 <div className="small text-dark d-none d-md-block">Account</div>
                             </a>
-                            <a href="/cart" className="nav-link text-center ms-3 position-relative">
+                            <button onClick={toggleCart} className="nav-link text-center ms-3 position-relative">
                                 <FaShoppingCart className="fs-5 text-dark" />
                                 <div className="small text-dark d-none d-md-block">Cart</div>
                                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                                     0
                                 </span>
-                            </a>
+                            </button>
+                            {isCartOpen && (
+                                <div
+                                    className="d-flex flex-column justify-content-between align-items-center position-absolute end-0 bg-white shadow p-3"
+                                    style={{
+                                        width: '300px',
+                                        top: '100%',
+                                        zIndex: 1050,
+                                        borderRadius: '8px',
+                                        minHeight: '250px',
+                                    }}
+                                >
+                                    <h5 className="mb-3">Your Cart</h5>
+                                    <div className='my-4 text-center'>
+                                        <FaShoppingCart size={80} />
+                                        <p>Your cart is currently empty.</p>
+                                    </div>
+                                    {/* Add cart items here */}
+                                    <div className="d-flex justify-content-between mt-3">
+                                        <a href="/" className="btn btn-primary">
+                                            Shop our Products
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </nav>
