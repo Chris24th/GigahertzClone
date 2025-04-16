@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Footer = () => {
     return (
-        <footer className="bg-light py-5">
+        <footer className="py-5" style={{ backgroundColor: '#F3F5F6' }}>
             <div className="container">
                 <div className="d-flex justify-content-between flex-wrap">
                     {/* OUR COMPANY Column */}

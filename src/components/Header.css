@@ -82,3 +82,10 @@
         max-height: 30px;
     }
 }
+.bg-header {
+    background-color: #0000FF !important;
+}
+
+.bg-primary {
+    background-color: #0000FF !important;
+}

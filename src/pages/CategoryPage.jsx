@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CategoryPage = ({ title, categoryId }) => {
     const [products, setProducts] = useState([]);
     const [category, setCategory] = useState(null);
+    const [brands, setBrands] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -17,6 +20,12 @@ const CategoryPage = ({ title, categoryId }) => {
                 if (result.success) {
                     setProducts(result.data.products);
                     setCategory(result.data.category);
+
+                    // Extract unique brands from products
+                    if (result.data.products && result.data.products.length > 0) {
+                        const uniqueBrands = [...new Set(result.data.products.map(product => product.brand))];
+                        setBrands(uniqueBrands);
+                    }
                 } else {
                     setError(result.message || 'Failed to load products');
                 }
@@ -32,6 +41,13 @@ const CategoryPage = ({ title, categoryId }) => {
             fetchProducts();
         }
     }, [categoryId]);
+
+    const handleBrandFilter = (brand) => {
+        // This would typically navigate to a filtered version of the category
+        // For now, we'll just alert, but in a real implementation you'd navigate to a new route
+        // or apply a filter to the current page
+        navigate(`/brands/${brand.toLowerCase().replace(/\s+/g, '-')}`);
+    };
 
     if (loading) {
         return (
@@ -55,7 +71,7 @@ const CategoryPage = ({ title, categoryId }) => {
     const formatPrice = (price) => {
         return new Intl.NumberFormat('en-US', {
             style: 'currency',
-            currency: 'USD'
+            currency: 'PHP'
         }).format(price);
     };
 
@@ -68,6 +84,24 @@ const CategoryPage = ({ title, categoryId }) => {
                 </div>
             )}
 
+            {/* Brand Navigation */}
+            {brands.length > 0 && (
+                <div className="mb-4">
+                    <h5>Browse by Brand:</h5>
+                    <div className="d-flex flex-wrap gap-2">
+                        {brands.map(brand => (
+                            <button
+                                key={brand}
+                                className="btn btn-outline-secondary"
+                                onClick={() => handleBrandFilter(brand)}
+                            >
+                                {brand}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             {products.length === 0 ? (
                 <div className="alert alert-info">No products found in this category.</div>
             ) : (
@@ -75,7 +109,7 @@ const CategoryPage = ({ title, categoryId }) => {
                         {products.map(product => (
                             <div key={product.productId} className="col-md-4 mb-4">
                                 <div className="card h-100">
-                                    {product.imageUrl ? (
+                                    {product.imageUrl && product.imageUrl !== 'na' ? (
                                         <img
                                             src={product.imageUrl}
                                             className="card-img-top"
@@ -92,14 +126,15 @@ const CategoryPage = ({ title, categoryId }) => {
                                     )}
                                     <div className="card-body d-flex flex-column">
                                         <h5 className="card-title">{product.name}</h5>
-                                        {product.shortDescription && (
-                                            <p className="card-text mb-3">{product.shortDescription}</p>
+                                        <p className="card-text text-muted mb-2">{product.brand}</p>
+                                        {product.description && (
+                                            <p className="card-text mb-3">{product.description.substring(0, 100)}...</p>
                                         )}
                                         <div className="mt-auto">
                                             {product.price > 0 ? (
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <span className="fs-5 fw-bold">{formatPrice(product.price)}</span>
-                                                    {product.isInStock ? (
+                                                    {product.stocks > 0 ? (
                                                         <span className="badge bg-success">In Stock</span>
                                                     ) : (
                                                         <span className="badge bg-danger">Out of Stock</span>
@@ -111,7 +146,7 @@ const CategoryPage = ({ title, categoryId }) => {
                                             <div className="d-grid gap-2 mt-3">
                                                 <button
                                                     className="btn btn-primary"
-                                                    disabled={!product.isInStock}
+                                                    disabled={product.stocks <= 0}
                                                     onClick={() => alert(`Added ${product.name} to cart`)}
                                                 >
                                                     Add to Cart

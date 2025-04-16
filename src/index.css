@@ -39,3 +39,10 @@ section {
   outline: none !important;
   box-shadow: none !important;
 }
+.btn-primary {
+  background-color: #0008F1 !important;
+}
+
+.bg-lightblue {
+  background-color: #00BADB !important;
+}
