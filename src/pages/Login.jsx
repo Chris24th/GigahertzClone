@@ -1,25 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { FaEye, FaEyeSlash, FaFacebookF, FaGoogle, FaUser, FaSignOutAlt, FaEnvelope, FaCalendarAlt } from 'react-icons/fa';
-import './Login.css';
-import axios from 'axios'; // Make sure to install axios: npm install axios
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import authService from '../authService';
+import axios from 'axios';
 
-const Login = () => {
-    const [activeTab, setActiveTab] = useState('login');
+const LoginSignup = () => {
+    const [isLoginView, setIsLoginView] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const [showForgotPassword, setShowForgotPassword] = useState(false);
+
+    // Login state
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
+
+    // Signup state
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    // Forgot password state
     const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
-    const [showForgotPassword, setShowForgotPassword] = useState(false);
+
+    // UI state
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userData, setUserData] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
-    const [loading, setLoading] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
+    const [loading, setLoading] = useState(false);
 
     // Check authentication status when component mounts
     useEffect(() => {
@@ -30,24 +38,20 @@ const Login = () => {
     const checkAuthStatus = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('https://localhost:44373/api/AccountApi/CheckAuthStatus');
-            if (response.data.isAuthenticated) {
+
+            // Use the reusable authService function
+            const response = await authService.checkAuthStatus();
+            console.log(response);
+
+            if (response.isAuthenticated) {
                 setIsAuthenticated(true);
-                setUserData({ email: response.data.email });
+                setUserData({ email: response.email });
             }
         } catch (error) {
             console.error('Authentication check failed:', error);
         } finally {
             setLoading(false);
         }
-    };
-
-    // Toggle between login and signup
-    const toggleTab = (tab) => {
-        setActiveTab(tab);
-        setShowForgotPassword(false);
-        setErrorMessage('');
-        setSuccessMessage('');
     };
 
     // Toggle password visibility
@@ -63,20 +67,14 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('https://localhost:44373/api/AccountApi/Login', {
-                email: loginEmail,
-                password: loginPassword,
-                rememberMe: true
-            });
+            // Use the reusable authService function for login
+            const response = await authService.login(loginEmail, loginPassword, true);
 
-            if (response.data.success) {
+            if (response.success) {
                 setSuccessMessage('Login successful!');
                 setIsAuthenticated(true);
-                setUserData({ email: response.data.email });
-
-                // Reset form
-                setLoginEmail('');
-                setLoginPassword('');
+                setUserData({ email: response.email });
+                window.location.reload();
             }
         } catch (error) {
             if (error.response && error.response.status === 423) {
@@ -106,16 +104,17 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const response = await axios.post('https://localhost:44373/api/AccountApi/Register', {
+            // Use the reusable authService function for signup
+            const response = await authService.register({
                 email: email,
                 password: password,
-                confirmPassword: confirmPassword
+                confirmPassword: confirmPassword,
             });
 
-            if (response.data.success) {
+            if (response.success) {
                 setSuccessMessage('Account created successfully! You are now logged in.');
                 setIsAuthenticated(true);
-                setUserData({ email: response.data.email });
+                setUserData({ email: response.email });
 
                 // Reset form
                 setEmail('');
@@ -137,19 +136,32 @@ const Login = () => {
     };
 
     // Handle forgot password form submission
-    const handleForgotPassword = (e) => {
+    const handleForgotPassword = async (e) => {
         e.preventDefault();
-        // This would connect to a password reset API endpoint
-        // For now, just show a success message
-        setSuccessMessage('If this email exists in our system, you will receive password reset instructions shortly.');
-        setForgotPasswordEmail('');
+        setErrorMessage('');
+        setSuccessMessage('');
+        setLoading(true);
+
+        try {
+            // Use authService for forgot password functionality
+            await authService.forgotPassword({ email: forgotPasswordEmail });
+
+            setSuccessMessage('If this email exists in our system, you will receive password reset instructions shortly.');
+            setForgotPasswordEmail('');
+        } catch (error) {
+            setErrorMessage('An error occurred. Please try again later.');
+            console.error('Forgot password error:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Handle logout
     const handleLogout = async () => {
         setLoading(true);
         try {
-            await axios.post('https://localhost:44373/api/AccountApi/Logout');
+            // Use the reusable authService function for logout
+            await authService.logout();
             setIsAuthenticated(false);
             setUserData(null);
             setSuccessMessage('You have been logged out successfully.');
@@ -161,316 +173,278 @@ const Login = () => {
         }
     };
 
-    // Display user account info when logged in
-    const renderUserAccount = () => {
-        return (
-            <div className="user-account-container">
-                <div className="card">
-                    <div className="card-header bg-primary text-white">
-                        <h4 className="mb-0">My Account</h4>
-                    </div>
-                    <div className="card-body">
-                        <div className="text-center mb-4">
-                            <div className="avatar-circle mb-3">
-                                <FaUser size={50} />
-                            </div>
-                            <h5>{userData?.email}</h5>
-                        </div>
-
-                        <div className="account-details">
-                            <div className="detail-item">
-                                <div className="icon">
-                                    <FaEnvelope />
-                                </div>
-                                <div className="content">
-                                    <div className="label">Email</div>
-                                    <div className="value">{userData?.email}</div>
-                                </div>
-                            </div>
-
-                            <div className="detail-item">
-                                <div className="icon">
-                                    <FaCalendarAlt />
-                                </div>
-                                <div className="content">
-                                    <div className="label">Member Since</div>
-                                    <div className="value">{new Date().toLocaleDateString()}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="d-grid gap-2 mt-4">
-                            <button
-                                className="btn btn-primary"
-                                onClick={() => {/* Navigate to profile edit page */ }}
-                            >
-                                Edit Profile
-                            </button>
-                            <button
-                                className="btn btn-outline-danger"
-                                onClick={handleLogout}
-                                disabled={loading}
-                            >
-                                {loading ? 'Logging out...' : <><FaSignOutAlt className="me-2" /> Sign Out</>}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
-    // Render auth forms or user account based on authentication status
     return (
-        <div className="auth-page">
-            <div className="container py-5">
-                <div className="row justify-content-center">
-                    <div className="col-md-8 col-lg-6">
-                        {/* Show success/error messages */}
-                        {successMessage && (
-                            <div className="alert alert-success mb-4" role="alert">
-                                {successMessage}
-                            </div>
-                        )}
-                        {errorMessage && (
-                            <div className="alert alert-danger mb-4" role="alert">
-                                {errorMessage}
-                            </div>
-                        )}
+        <section className="d-flex justify-content-center align-items-center bg-light p-5">
+            <div className="mx-auto p-5 bg-white col-md-6">
+                {/* Message display */}
+                {successMessage && (
+                    <div className="mb-3 p-3 bg-success text-white rounded">
+                        {successMessage}
+                    </div>
+                )}
+                {errorMessage && (
+                    <div className="mb-3 p-3 bg-danger text-white rounded">
+                        {errorMessage}
+                    </div>
+                )}
 
-                        {isAuthenticated ? (
-                            // User is logged in, show account info
-                            renderUserAccount()
-                        ) : (
-                        // User is not logged in, show auth forms
-                                <div className="card auth-card">
-                                    <div className="card-header bg-white p-0">
-                                        <ul className="nav nav-tabs nav-fill">
-                                            <li className="nav-item">
-                                                <button
-                                                    className={`nav-link ${activeTab === 'login' ? 'active' : ''}`}
-                                                    onClick={() => toggleTab('login')}
-                                                >
-                                                    LOGIN
-                                                </button>
-                                            </li>
-                                            <li className="nav-item">
-                                                <button
-                                                    className={`nav-link ${activeTab === 'signup' ? 'active' : ''}`}
-                                                    onClick={() => toggleTab('signup')}
-                                                >
-                                                    CREATE ACCOUNT
-                                                </button>
-                                            </li>
-                                        </ul>
+                {isAuthenticated ? (
+                    // User Account View
+                    <div className="text-center px-5">
+                        <div className="rounded-circle bg-primary d-flex align-items-center justify-content-center mx-auto mb-3" style={{ width: '80px', height: '80px' }}>
+                            <svg className="text-light" fill="none" stroke="currentColor" width="40" height="40" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <h2 className="h4 mb-2">My Account</h2>
+                        <p className="text-muted mb-4">{userData?.email}</p>
+
+                        <div className="border-top border-bottom py-3 mb-4">
+                            <div className="d-flex align-items-center mb-3">
+                                <svg className="text-blue me-2" fill="none" stroke="currentColor" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                                <div className='text-start'>
+                                    <small className="text-secondary">Email</small>
+                                    <div className="fw-medium">{userData?.email}</div>
+                                </div>
+                            </div>
+                            <div className="d-flex align-items-center">
+                                <svg className="text-blue me-2" fill="none" stroke="currentColor" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                                <div className='text-start'>
+                                    <small className="text-secondary">Member Since</small>
+                                    <div className="fw-medium">{new Date().toLocaleDateString()}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button
+                            className="btn btn-primary w-100 mb-3"
+                            onClick={() => {/* Navigate to profile edit page */ }}
+                        >
+                            Edit Profile
+                        </button>
+                        <button
+                            className={`btn btn-outline-danger w-100 ${loading && 'disabled'}`}
+                            onClick={handleLogout}
+                        >
+                            {loading ? 'Logging out...' : 'Sign Out'}
+                        </button>
+                    </div>
+                ) : showForgotPassword ? (
+                    // Forgot Password View
+                    <>
+                        <h1 className="fw-bold text-center text-blue mb-4">Reset Your Password</h1>
+                        <p className="text-center text-muted mb-4">
+                            We will send you an email to reset your password.
+                        </p>
+
+                            <form onSubmit={handleForgotPassword}>
+                                <div className="mb-3">
+                                    <input
+                                        type="email"
+                                        className="form-control border  py-3"
+                                        placeholder="Email"
+                                        value={forgotPasswordEmail}
+                                        onChange={(e) => setForgotPasswordEmail(e.target.value)}
+                                        required
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary w-100 mb-3"
+                                    disabled={loading}
+                                >
+                                    {loading ? 'Submitting...' : 'Submit'}
+                                </button>
+                                <button
+                                    className="btn btn-outline-secondary w-100"
+                                    onClick={() => setShowForgotPassword(false)}
+                                    disabled={loading}
+                                >
+                                    Cancel
+                                </button>
+                            </form>
+                        </>
+                    ) : isLoginView ? (
+                        // Login View
+                        <>
+                            <h1 className="fw-bold text-center text-blue mb-4">Login to my account</h1>
+                            <p className="text-center text-muted mb-4">
+                                Enter your e-mail and password:
+                            </p>
+
+                            <form onSubmit={handleLogin}>
+                                <div className="mb-3">
+                                        <input
+                                            type="email"
+                                            className="form-control  py-3"
+                                            placeholder="Email"
+                                            value={loginEmail}
+                                            onChange={(e) => setLoginEmail(e.target.value)}
+                                            required
+                                        />
                                     </div>
 
-                                    <div className="card-body p-4">
-                                        {/* Social Media Login Buttons */}
-                                        <div className="social-login mb-4">
-                                            <div className="row">
-                                                <div className="col-6">
-                                                    <button className="btn btn-facebook w-100">
-                                                        <FaFacebookF className="me-2" /> Facebook
-                                                    </button>
-                                                </div>
-                                                <div className="col-6">
-                                                    <button className="btn btn-google w-100">
-                                                        <FaGoogle className="me-2" /> Google
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <div className="separator my-4">
-                                                <span>OR</span>
-                                            </div>
+                                    <div className="mb-3 position-relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            className="form-control  py-3"
+                                            placeholder="Password"
+                                            value={loginPassword}
+                                            onChange={(e) => setLoginPassword(e.target.value)}
+                                            required
+                                        />
+                                        <button
+                                            className="btn position-absolute end-0 top-50 translate-middle-y text-secondary hover-text-dark"
+                                            onClick={togglePasswordVisibility}
+                                        >
+                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                        </button>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className="btn btn-primary w-100 mb-3"
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Signing in...' : 'Login'}
+                                    </button>
+                                </form>
+
+                                <div className="mt-3 text-center">
+                                    <button
+                                        className="btn text-blue hover-text-dark fw-medium"
+                                        onClick={() => setShowForgotPassword(true)}
+                                    >
+                                        Recover password
+                                    </button>
+                                </div>
+
+                                <div className="mt-4 text-center text-muted text-sm">
+                                    <p>This site is protected by hCaptcha and the hCaptcha Privacy</p>
+                                    <p>Policy and Terms of Service apply.</p>
+                                </div>
+
+                                <div className="mt-4 text-center border-top">
+                                    <p className="text-dark mt-5">New customer?
+                                        <button
+                                            className="btn text-blue hover-text-dark fw-medium"
+                                            onClick={() => setIsLoginView(false)}
+                                        >
+                                            Create your account
+                                        </button>
+                                    </p>
+                                </div>
+                            </>
+                        ) : (
+                                // Signup View
+                                <>
+                                    <h1 className="fw-bold text-center text-blue mb-4">Create my account</h1>
+                                    <p className="text-center text-muted mb-4">
+                                        Please fill in the information below:
+                                    </p>
+
+                                    <form onSubmit={handleSignup}>
+                                        <div className="mb-3">
+                                            <input
+                                                type="text"
+                                                className="form-control py-3"
+                                                placeholder="First name"
+                                                value={firstName}
+                                                onChange={(e) => setFirstName(e.target.value)}
+                                                required
+                                            />
                                         </div>
 
-                                        {showForgotPassword ? (
-                                            /* Forgot Password Form */
-                                            <div className="forgot-password-form">
-                                                <h5 className="mb-4">Reset Your Password</h5>
-                                                <p className="text-muted mb-4">
-                                                    We will send you an email to reset your password.
-                                                </p>
-                                                <form onSubmit={handleForgotPassword}>
-                                                    <div className="mb-3">
-                                                        <label htmlFor="forgot-email" className="form-label">Email</label>
-                                                        <input
-                                                            type="email"
-                                                            className="form-control"
-                                                            id="forgot-email"
-                                                            value={forgotPasswordEmail}
-                                                            onChange={(e) => setForgotPasswordEmail(e.target.value)}
-                                                            required
-                                                        />
-                                                    </div>
-                                                    <div className="d-grid gap-2 mb-3">
-                                                        <button
-                                                            type="submit"
-                                                            className="btn btn-primary"
-                                                            disabled={loading}
-                                                        >
-                                                            {loading ? 'Submitting...' : 'Submit'}
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            className="btn btn-outline-secondary"
-                                                            onClick={() => setShowForgotPassword(false)}
-                                                            disabled={loading}
-                                                        >
-                                                            Cancel
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        ) : activeTab === 'login' ? (
-                                            /* Login Form */
-                                            <form onSubmit={handleLogin}>
-                                                <div className="mb-3">
-                                                    <label htmlFor="login-email" className="form-label">Email</label>
-                                                    <input
-                                                        type="email"
-                                                        className="form-control"
-                                                        id="login-email"
-                                                        value={loginEmail}
-                                                        onChange={(e) => setLoginEmail(e.target.value)}
-                                                        required
-                                                    />
-                                                </div>
-                                                <div className="mb-3">
-                                                    <label htmlFor="login-password" className="form-label">Password</label>
-                                                    <div className="input-group">
-                                                        <input
-                                                            type={showPassword ? "text" : "password"}
-                                                            className="form-control"
-                                                            id="login-password"
-                                                            value={loginPassword}
-                                                            onChange={(e) => setLoginPassword(e.target.value)}
-                                                            required
-                                                        />
-                                                        <button
-                                                            className="btn btn-outline-secondary"
-                                                            type="button"
-                                                            onClick={togglePasswordVisibility}
-                                                        >
-                                                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                                <div className="mb-4 text-end">
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-link p-0 text-decoration-none"
-                                                        onClick={() => setShowForgotPassword(true)}
-                                                    >
-                                                        Forgot your password?
-                                                    </button>
-                                                </div>
-                                                <div className="d-grid">
-                                                        <button
-                                                            type="submit"
-                                                            className="btn btn-primary"
-                                                            disabled={loading}
-                                                        >
-                                                            {loading ? 'Signing In...' : 'Sign In'}
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            ) : (
-                                                /* Signup Form */
-                                                <form onSubmit={handleSignup}>
-                                                    <div className="row mb-3">
-                                                        <div className="col-md-6">
-                                                            <label htmlFor="first-name" className="form-label">First Name</label>
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
-                                                                id="first-name"
-                                                                value={firstName}
-                                                                onChange={(e) => setFirstName(e.target.value)}
-                                                                />
-                                                            </div>
-                                                            <div className="col-md-6">
-                                                                <label htmlFor="last-name" className="form-label">Last Name</label>
-                                                                <input
-                                                                    type="text"
-                                                                    className="form-control"
-                                                                    id="last-name"
-                                                                    value={lastName}
-                                                                    onChange={(e) => setLastName(e.target.value)}
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <label htmlFor="signup-email" className="form-label">Email</label>
-                                                            <input
-                                                                type="email"
-                                                                className="form-control"
-                                                                id="signup-email"
-                                                                value={email}
-                                                                onChange={(e) => setEmail(e.target.value)}
-                                                                required
-                                                            />
-                                                        </div>
-                                                        <div className="mb-3">
-                                                            <label htmlFor="signup-password" className="form-label">Password</label>
-                                                            <div className="input-group">
-                                                                <input
-                                                                    type={showPassword ? "text" : "password"}
-                                                                    className="form-control"
-                                                                    id="signup-password"
-                                                                    value={password}
-                                                                    onChange={(e) => setPassword(e.target.value)}
-                                                                    required
-                                                                />
-                                                                <button
-                                                                    className="btn btn-outline-secondary"
-                                                                    type="button"
-                                                                    onClick={togglePasswordVisibility}
-                                                                >
-                                                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div className="mb-4">
-                                                            <label htmlFor="confirm-password" className="form-label">Confirm Password</label>
-                                                            <div className="input-group">
-                                                                <input
-                                                                    type={showPassword ? "text" : "password"}
-                                                                    className="form-control"
-                                                                    id="confirm-password"
-                                                                    value={confirmPassword}
-                                                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                                                    required
-                                                                />
-                                                                <button
-                                                                    className="btn btn-outline-secondary"
-                                                                    type="button"
-                                                                    onClick={togglePasswordVisibility}
-                                                                >
-                                                                    {showPassword ? <FaEyeSlash /> : <FaEye />}
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                        <div className="d-grid">
-                                                    <button
-                                                        type="submit"
-                                                        className="btn btn-primary"
-                                                        disabled={loading}
-                                                    >
-                                                        {loading ? 'Creating Account...' : 'Create Account'}
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        )}
+                                        <div className="mb-3">
+                                            <input
+                                                type="text"
+                                                className="form-control  py-3"
+                                                placeholder="Last name"
+                                                value={lastName}
+                                                onChange={(e) => setLastName(e.target.value)}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div className="mb-3">
+                                            <input
+                                                type="email"
+                                                className="form-control  py-3"
+                                                placeholder="Email"
+                                                value={email}
+                                                onChange={(e) => setEmail(e.target.value)}
+                                                required
+                                            />
+                                        </div>
+
+                                        <div className="mb-3 position-relative">
+                                            <input
+                                                type={showPassword ? "text" : "password"}
+                                                className="form-control  py-3"
+                                                placeholder="Password"
+                                                value={password}
+                                                onChange={(e) => setPassword(e.target.value)}
+                                                required
+                                            />
+                                            <button
+                                                className="btn position-absolute end-0 top-50 translate-middle-y text-secondary hover-text-dark"
+                                                onClick={togglePasswordVisibility}
+                                            >
+                                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                            </button>
+                                        </div>
+
+                                        <div className="mb-4 position-relative">
+                                            <input
+                                                type={showPassword ? "text" : "password"}
+                                                className="form-control  py-3"
+                                                placeholder="Confirm Password"
+                                                value={confirmPassword}
+                                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                                required
+                                            />
+                                            <button
+                                                className="btn position-absolute btn end-0 top-50 translate-middle-y text-secondary hover-text-dark"
+                                                onClick={togglePasswordVisibility}
+                                            >
+                                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                            </button>
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            className="btn btn-primary w-100 mb-3"
+                                            disabled={loading}
+                                        >
+                                            {loading ? 'Creating Account...' : 'Create my account'}
+                                        </button>
+                                    </form>
+
+                                    <div className="mt-4 text-center text-muted text-sm">
+                                        <p>This site is protected by hCaptcha and the hCaptcha Privacy</p>
+                                        <p>Policy and Terms of Service apply.</p>
                                     </div>
-                                </div>
-                        )}
-                    </div>
-                </div>
+
+                                    <div className="mt-4 text-center border-top pt-4">
+                                        <p className="text-dark">Already have an account?
+                                            <button
+                                                className="btn text-blue hover-text-dark ms-1 fw-medium"
+                                                onClick={() => setIsLoginView(true)}
+                                            >
+                                                Login here
+                                            </button>
+                                        </p>
+                                    </div>
+                                </>
+                )}
             </div>
-        </div>
+        </section>
     );
 };
 
-export default Login;
+export default LoginSignup;

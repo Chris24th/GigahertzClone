@@ -42,7 +42,55 @@ section {
 .btn-primary {
   background-color: #0008F1 !important;
 }
+.btn-outline-secondary:hover {
+  background-color: #0008F1 !important;
+  color: #fff !important;
+}
 
+.btn-outline-primary:hover {
+  background-color: #0008F1 !important;
+  color: #fff !important;
+}
+
+.btn-light:hover {
+  background-color: #00BADB !important;
+  border-color: #00BADB !important;
+  color: #fff !important;
+}
+
+text-primary {
+  color: #0008F1 !important;
+}
+
+.text-blue {
+  color: #0008F1 !important;
+}
 .bg-lightblue {
   background-color: #00BADB !important;
+}
+.bg-blue {
+  background-color: #0008F1 !important;
+}
+
+.bg-darkblue {
+  background-color: #1E0B70 !important;
+}
+
+.form-check-input:checked {
+  background-color: #00BADB !important;
+  border-color: #00BADB !important;
+}
+
+.form-control:focus {
+  border-color: #00BADB !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 186, 219, 0.25) !important;
+}
+
+.form-select:focus {
+  border-color: #00BADB !important;
+  box-shadow: 0 0 0 0.2rem rgba(0, 186, 219, 0.25) !important;
+}
+
+.li-hover:hover {
+  color: #00BADB !important;
 }

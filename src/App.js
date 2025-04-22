@@ -88,8 +88,9 @@ function App() {
                 <Route path="/" element={<Home />} />
                 {generateCategoryRoutes()}
                 <Route path="/repair-and-service" element={<Repair />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="*" element={<div className="text-center">Page not found</div>} />
+                <Route path="/account" element={<Login />} />
+                <Route path="/search" element={<CategoryPage />} />
+                <Route path="*" element={<section className="text-center">Page not found</section>} />
               </Routes>
         )}
       </div>

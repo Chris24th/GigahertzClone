@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaUser, FaShoppingCart, FaSearch, FaTimes } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Header = () => {
@@ -7,6 +8,7 @@ const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [isCartOpen, setIsCartOpen] = useState(false); // State for cart popup
+    const navigate = useNavigate();
 
     // Handle scroll effect
     useEffect(() => {
@@ -34,8 +36,9 @@ const Header = () => {
     // Handle search
     const handleSearch = (e) => {
         e.preventDefault();
-        console.log("Searching for:", searchQuery);
-        // Add actual search functionality here
+        if (searchQuery.trim()) {
+            navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+        }
     };
 
     return (
@@ -46,7 +49,7 @@ const Header = () => {
                         {/* Logo */}
                         <a className="navbar-brand" href="/">
                             <img
-                                src="assets/Gigahertz-Logo.png"
+                                src="assets/gigahertz-logo.png"
                                 alt="Gigahertz Logo"
                                 className="img-fluid  text-light"
                                 style={{ maxHeight: '40px' }}
@@ -61,16 +64,16 @@ const Header = () => {
                             aria-label="Toggle search"
                             style={{ fontSize: '1.5rem', border: 'none' }} // Enlarges the button
                         >
-                            {isMenuOpen ? <FaTimes /> : <FaSearch color='white' />}
+                            {isMenuOpen ? <FaTimes color='white' /> : <FaSearch color='white' />}
                         </button>
 
                         {/* User Actions */}
                         <div className={`align-items-center ${isMenuOpen ? 'd-flex' : 'd-none'}`}>
                             <a href="/account" className="nav-link text-center">
-                                <FaUser className="fs-5 text-dark" />
+                                <FaUser className="fs-5 text-light" />
                             </a>
                             <a href="/cart" className="nav-link text-center ms-3 position-relative">
-                                <FaShoppingCart className="fs-5 text-dark" />
+                                <FaShoppingCart className="fs-5 text-light" />
                                 <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-lightblue">
                                     0
                                 </span>
@@ -99,7 +102,7 @@ const Header = () => {
 
                         {/* User Actions */}
                         <div className={`align-items-center ${isMenuOpen ? 'd-none' : 'd-flex '} `}>
-                            <a href="/Login" className="nav-link text-center  text-light">
+                            <a href="/account" className="nav-link text-center  text-light">
                                 <FaUser className="fs-5" />
                                 <div className="small d-none d-md-block">Account</div>
                             </a>

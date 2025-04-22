@@ -1,3 +1,4 @@
+import axios from 'axios';
 
 const baseDomain = "https://localhost:44373/";
 
@@ -6,7 +7,9 @@ const authService = {
     // Check if user is authenticated
     checkAuthStatus: async () => {
         try {
-            const response = await axios.get(`${baseDomain}api/AccountApi/CheckAuthStatus`);
+            const response = await axios.get(`${baseDomain}api/AccountApi/CheckAuthStatus`, {
+                withCredentials: true
+            });
             return response.data;
         } catch (error) {
             console.error('Auth check error:', error);
@@ -21,6 +24,8 @@ const authService = {
                 email,
                 password,
                 rememberMe
+            }, {
+                withCredentials: true
             });
             return response.data;
         } catch (error) {
@@ -31,7 +36,9 @@ const authService = {
     // Register new user
     register: async (userData) => {
         try {
-            const response = await axios.post(`${baseDomain}api/AccountApi/Register`, userData);
+            const response = await axios.post(`${baseDomain}api/AccountApi/Register`, userData, {
+                withCredentials: true
+            });
             return response.data;
         } catch (error) {
             throw error;
@@ -41,10 +48,14 @@ const authService = {
     // Logout user
     logout: async () => {
         try {
-            const response = await axios.post(`${baseDomain}api/AccountApi/Logout`);
+            const response = await axios.post(`${baseDomain}api/AccountApi/Logout`, {}, {
+                withCredentials: true
+            });
             return response.data;
         } catch (error) {
             throw error;
         }
     }
 };
+
+export default authService;

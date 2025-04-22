@@ -9,28 +9,28 @@ const Footer = () => {
                 <div className="d-flex justify-content-between flex-wrap">
                     {/* OUR COMPANY Column */}
                     <div className="col-6 col-lg-3">
-                        <h5 className="text-primary fw-bold mb-4">OUR COMPANY</h5>
+                        <h5 className="text-blue fw-bold mb-4">OUR COMPANY</h5>
                         <ul className="list-unstyled">
                             <li className="mb-2">
-                                <Link to="/about-us" className="text-dark text-decoration-none">About Us</Link>
+                                <Link to="/about-us" className="text-dark text-decoration-none li-hover">About Us</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/blogs" className="text-dark text-decoration-none">Blogs</Link>
+                                <Link to="/blogs" className="text-dark text-decoration-none li-hover">Blogs</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/branches" className="text-dark text-decoration-none">Branches</Link>
+                                <Link to="/branches" className="text-dark text-decoration-none li-hover">Branches</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/careers" className="text-dark text-decoration-none">Careers</Link>
+                                <Link to="/careers" className="text-dark text-decoration-none li-hover">Careers</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/contact-us" className="text-dark text-decoration-none">Contact Us</Link>
+                                <Link to="/contact-us" className="text-dark text-decoration-none li-hover">Contact Us</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/promos" className="text-dark text-decoration-none">Promos</Link>
+                                <Link to="/promos" className="text-dark text-decoration-none li-hover">Promos</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/terms" className="text-dark text-decoration-none">
+                                <Link to="/terms" className="text-dark text-decoration-none li-hover">
                                     <span className="text-danger">*</span>Terms and Conditions Apply
                                 </Link>
                             </li>
@@ -39,25 +39,25 @@ const Footer = () => {
 
                     {/* SUPPORT AND SERVICES Column */}
                     <div className="col-6 col-lg-3">
-                        <h5 className="text-primary fw-bold mb-4">SUPPORT AND SERVICES</h5>
+                        <h5 className="text-blue fw-bold mb-4">SUPPORT AND SERVICES</h5>
                         <ul className="list-unstyled">
                             <li className="mb-2">
-                                <Link to="/delivery" className="text-dark text-decoration-none">Delivery</Link>
+                                <Link to="/delivery" className="text-dark text-decoration-none li-hover">Delivery</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/track-repair" className="text-dark text-decoration-none">Track My Repair</Link>
+                                <Link to="/track-repair" className="text-dark text-decoration-none li-hover">Track My Repair</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/repair-and-service" className="text-dark text-decoration-none">Repair and Service</Link>
+                                <Link to="/repair-and-service" className="text-dark text-decoration-none li-hover">Repair and Service</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/return-refund" className="text-dark text-decoration-none">Return and Refund Policies</Link>
+                                <Link to="/return-refund" className="text-dark text-decoration-none li-hover">Return and Refund Policies</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/terms-conditions" className="text-dark text-decoration-none">Terms and Conditions</Link>
+                                <Link to="/terms-conditions" className="text-dark text-decoration-none li-hover">Terms and Conditions</Link>
                             </li>
                             <li className="mb-2">
-                                <Link to="/privacy-policy" className="text-dark text-decoration-none">Privacy Policy</Link>
+                                <Link to="/privacy-policy" className="text-dark text-decoration-none li-hover">Privacy Policy</Link>
                             </li>
                         </ul>
                     </div>
