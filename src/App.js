@@ -7,6 +7,8 @@ import Home from './pages/Home';
 import CategoryPage from './pages/CategoryPage';
 import Repair from './pages/Repair';
 import Login from './pages/Login';
+import AdminDashboard from './pages/AdminDashboard';
+import RepairStatus from './pages/RepairStatus';
 
 function App() {
   const [categories, setCategories] = useState([]);
@@ -87,9 +89,11 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 {generateCategoryRoutes()}
-                <Route path="/repair-and-service" element={<Repair />} />
                 <Route path="/account" element={<Login />} />
                 <Route path="/search" element={<CategoryPage />} />
+                <Route path="/repair-and-service" element={<Repair />} />
+                <Route path="/track-repair" element={<RepairStatus />} />
+                <Route path="/admin-dashboard" element={<AdminDashboard />} />
                 <Route path="*" element={<section className="text-center">Page not found</section>} />
               </Routes>
         )}

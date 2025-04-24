@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import authService from '../authService';
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const LoginSignup = () => {
     const [isLoginView, setIsLoginView] = useState(true);
@@ -28,6 +28,8 @@ const LoginSignup = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isAdmin, setAdmin] = useState(false);
+    const navigate = useNavigate();
 
     // Check authentication status when component mounts
     useEffect(() => {
@@ -39,10 +41,8 @@ const LoginSignup = () => {
         try {
             setLoading(true);
 
-            // Use the reusable authService function
             const response = await authService.checkAuthStatus();
-            console.log(response);
-
+            setAdmin(sessionStorage.getItem('isAdmin') == 'true' ? true : false);
             if (response.isAuthenticated) {
                 setIsAuthenticated(true);
                 setUserData({ email: response.email });
@@ -65,7 +65,6 @@ const LoginSignup = () => {
         setErrorMessage('');
         setSuccessMessage('');
         setLoading(true);
-
         try {
             // Use the reusable authService function for login
             const response = await authService.login(loginEmail, loginPassword, true);
@@ -74,7 +73,6 @@ const LoginSignup = () => {
                 setSuccessMessage('Login successful!');
                 setIsAuthenticated(true);
                 setUserData({ email: response.email });
-                window.location.reload();
             }
         } catch (error) {
             if (error.response && error.response.status === 423) {
@@ -220,12 +218,14 @@ const LoginSignup = () => {
                             </div>
                         </div>
 
-                        <button
-                            className="btn btn-primary w-100 mb-3"
-                            onClick={() => {/* Navigate to profile edit page */ }}
-                        >
-                            Edit Profile
-                        </button>
+                        {isAdmin && 
+                            <button
+                                className="btn btn-primary w-100 mb-3"
+                                onClick={() => { navigate('/admin-dashboard') }}
+                            >
+                                Admin Dashboard
+                            </button>
+                        }
                         <button
                             className={`btn btn-outline-danger w-100 ${loading && 'disabled'}`}
                             onClick={handleLogout}
@@ -299,6 +299,7 @@ const LoginSignup = () => {
                                             required
                                         />
                                         <button
+                                            type='button'
                                             className="btn position-absolute end-0 top-50 translate-middle-y text-secondary hover-text-dark"
                                             onClick={togglePasswordVisibility}
                                         >
@@ -392,6 +393,7 @@ const LoginSignup = () => {
                                                 required
                                             />
                                             <button
+                                                type='button'
                                                 className="btn position-absolute end-0 top-50 translate-middle-y text-secondary hover-text-dark"
                                                 onClick={togglePasswordVisibility}
                                             >
@@ -409,6 +411,7 @@ const LoginSignup = () => {
                                                 required
                                             />
                                             <button
+                                                type='button'
                                                 className="btn position-absolute btn end-0 top-50 translate-middle-y text-secondary hover-text-dark"
                                                 onClick={togglePasswordVisibility}
                                             >

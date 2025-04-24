@@ -10,23 +10,27 @@ const authService = {
             const response = await axios.get(`${baseDomain}api/AccountApi/CheckAuthStatus`, {
                 withCredentials: true
             });
+            if (response.data.isAdmin) sessionStorage.setItem('isAdmin', true);
+            else sessionStorage.removeItem('isAdmin');
             return response.data;
         } catch (error) {
             console.error('Auth check error:', error);
-            return { isAuthenticated: false };
+            return { isAuthenticated: false, isAdmin: false };
         }
     },
 
     // Login user
-    login: async (email, password, rememberMe = false) => {
+    login: async (email, password, isAdmin, rememberMe = false) => {
         try {
             const response = await axios.post(`${baseDomain}api/AccountApi/Login`, {
                 email,
                 password,
+                isAdmin,
                 rememberMe
             }, {
                 withCredentials: true
             });
+            response.data.isAdmin && sessionStorage.setItem('isAdmin', response.data.isAdmin);
             return response.data;
         } catch (error) {
             throw error;
