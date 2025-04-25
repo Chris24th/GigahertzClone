@@ -9,7 +9,10 @@ const RepairAdminStatus = () => {
     const [error, setError] = useState(null);
     const [selectedRepair, setSelectedRepair] = useState(null);
     const [statusUpdateForm, setStatusUpdateForm] = useState({
+        technicianId: 0,
         status: '',
+        partsUsed: '',
+        partsCost: 0,
         notes: ''
     });
     const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -28,7 +31,7 @@ const RepairAdminStatus = () => {
     ];
 
     useEffect(() => {
-        //fetchRepairs();
+        fetchRepairs();
     }, []);
 
     const fetchRepairs = async () => {
@@ -36,7 +39,7 @@ const RepairAdminStatus = () => {
         setError(null);
 
         try {
-            const response = await axios.get('/api/repairs');
+            const response = await axios.get('https://localhost:44373/api/repairs');
 
             if (response.data.success) {
                 setRepairs(response.data.data);
@@ -53,7 +56,7 @@ const RepairAdminStatus = () => {
 
     const fetchRepairDetails = async (repairId) => {
         try {
-            const response = await axios.get(`/api/repairs/${repairId}`);
+            const response = await axios.get(`https://localhost:44373/api/repairs/${repairId}`);
 
             if (response.data.success) {
                 setSelectedRepair(response.data.data);
@@ -75,7 +78,10 @@ const RepairAdminStatus = () => {
             setSelectedRepair(repair);
             // Reset the status update form
             setStatusUpdateForm({
+                technicianId: 0,
                 status: '',
+                partsUsed: '',
+                partsCost: 0,
                 notes: ''
             });
             setUpdateSuccess(false);
@@ -94,14 +100,14 @@ const RepairAdminStatus = () => {
         e.preventDefault();
         setUpdateSuccess(false);
 
-        if (!statusUpdateForm.status || !statusUpdateForm.notes) {
+        if (!statusUpdateForm.status || !statusUpdateForm.partsUsed || !statusUpdateForm.technicianId) {
             setError('Please complete all fields');
             return;
         }
 
         try {
             const response = await axios.post(
-                `/api/repairs/status/${selectedRepair.requestId}`,
+                `https://localhost:44373/api/repairs/status/${selectedRepair.requestId}`,
                 statusUpdateForm
             );
 
@@ -113,7 +119,10 @@ const RepairAdminStatus = () => {
                 fetchRepairs();
                 // Reset form
                 setStatusUpdateForm({
+                    technicianId: 0,
                     status: '',
+                    partsUsed: '',
+                    partsCost: '',
                     notes: ''
                 });
             } else {
@@ -127,7 +136,7 @@ const RepairAdminStatus = () => {
 
     const getCurrentStatus = (repair) => {
         if (repair.statusUpdates && repair.statusUpdates.length > 0) {
-            return repair.statusUpdates[0].status;
+            return repair.statusUpdates[repair.statusUpdates.length - 1].status;
         }
         return 'Unknown';
     };
@@ -169,7 +178,7 @@ const RepairAdminStatus = () => {
 
         // Get the current status of the repair
         const currentStatus = repair.statusUpdates && repair.statusUpdates.length > 0
-            ? repair.statusUpdates[0].status.toLowerCase()
+            ? repair.statusUpdates[repair.statusUpdates.length - 1].status.toLowerCase()
             : 'unknown';
 
         if (filter === 'active') {
@@ -185,7 +194,7 @@ const RepairAdminStatus = () => {
 
     return (
         <div className="row">
-            <div className="col-lg-5">
+            <div className="col-xxl-4">
                 <div className="card shadow mb-4">
                     <div className="card-header d-flex flex-column justify-content-between align-items-center">
                         <h2 className="h5 mb-2">Repair Requests</h2>
@@ -246,7 +255,7 @@ const RepairAdminStatus = () => {
                                                     Request #{repair.requestId} - {repair.customer.name}
                                                 </h5>
                                                 <p className="mb-1 small">
-                                                    {repair.product?.name || 'Unknown Product'} |
+                                                    {repair.model || 'Unknown Product'} |
                                                     S/N: {repair.serialNumber}
                                                 </p>
                                                 <small>
@@ -275,7 +284,7 @@ const RepairAdminStatus = () => {
                 </div>
             </div>
 
-            <div className="col-lg-7">
+            <div className="col-xxl-8">
                 {selectedRepair ? (
                     <div className="card shadow">
                         <div className="card-header">
@@ -307,7 +316,7 @@ const RepairAdminStatus = () => {
                             <div className="row mb-4">
                                 <div className="col-md-6">
                                     <h3 className="h6">Product Information</h3>
-                                    <p className="mb-1"><strong>Product:</strong> {selectedRepair.product?.name || 'N/A'}</p>
+                                    <p className="mb-1"><strong>Model:</strong> {selectedRepair.model || 'N/A'}</p>
                                     <p className="mb-0"><strong>Serial Number:</strong> {selectedRepair.serialNumber}</p>
                                 </div>
                                 <div className="col-md-6">
@@ -331,8 +340,10 @@ const RepairAdminStatus = () => {
                                             <tr>
                                                 <th>Date</th>
                                                 <th>Status</th>
-                                                <th>Notes</th>
+                                                <th>Parts Used</th>
+                                                <th>Parts Cost</th>
                                                 <th>Technician</th>
+                                                <th>Notes</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -344,8 +355,10 @@ const RepairAdminStatus = () => {
                                                             {status.status}
                                                         </span>
                                                     </td>
-                                                    <td>{status.notes}</td>
+                                                    <td>{status.partsUsed}</td>
+                                                    <td>{status.partsCost}</td>
                                                     <td>{status.technician?.name || 'N/A'}</td>
+                                                    <td>{status.notes}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -384,6 +397,46 @@ const RepairAdminStatus = () => {
                                             ))}
                                         </select>
                                     </div>
+
+
+                                    <div className="col-md-6 mb-3">
+                                        <label htmlFor="notes" className="form-label">Parts Used</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            id="partsUsed"
+                                            name="partsUsed"
+                                            value={statusUpdateForm.partsUsed}
+                                            onChange={handleStatusFormChange}
+                                            placeholder="Enter Parts Used"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="col-md-6 mb-3">
+                                        <label htmlFor="notes" className="form-label">Parts Cost</label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            id="partsCost"
+                                            name="partsCost"
+                                            value={statusUpdateForm.partsCost}
+                                            onChange={handleStatusFormChange}
+                                            placeholder="Enter Parts Cost"
+                                        />
+                                    </div>
+                                    <div className="col-md-6 mb-3">
+                                        <label htmlFor="notes" className="form-label">Technician ID</label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            id="technicianId"
+                                            name="technicianId"
+                                            value={statusUpdateForm.technicianId}
+                                            onChange={handleStatusFormChange}
+                                            required
+                                        />
+                                    </div>
                                     <div className="col-md-6 mb-3">
                                         <label htmlFor="notes" className="form-label">Notes</label>
                                         <input
@@ -394,7 +447,6 @@ const RepairAdminStatus = () => {
                                             value={statusUpdateForm.notes}
                                             onChange={handleStatusFormChange}
                                             placeholder="Enter status notes"
-                                            required
                                         />
                                     </div>
                                 </div>

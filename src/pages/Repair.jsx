@@ -445,7 +445,11 @@ export default function GigahertzServicePage() {
                         className="read-more-btn text-primary border-0 bg-transparent d-flex align-items-center p-0 mt-2"
                     >
                         {expanded ? "Read less" : "Read more"}
-                        <span className={`ms-1 ${expanded ? "rotate-icon" : ""}`}>▼</span>
+                        <span
+                            className="ms-1"
+                            style={{
+                                transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)',
+                            }}>▼</span>
                     </button>
                 </div>
 
@@ -463,7 +467,7 @@ export default function GigahertzServicePage() {
                                             style={{ cursor: 'pointer' }}
                                         >
                                             <div className="d-flex justify-content-between align-items-center">
-                                                <h3 className="h5 mb-0 fw-bold">{faq.question}</h3>
+                                                <h5 className="mb-0">{faq.question}</h5>
                                                 {activeAccordion === index ?
                                                     <FiChevronUp className="text-primary" size={20} /> :
                                                     <FiChevronDown className="text-primary" size={20} />

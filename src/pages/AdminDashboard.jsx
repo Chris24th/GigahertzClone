@@ -3,6 +3,7 @@ import authService from '../authService';
 import { useNavigate } from 'react-router-dom';
 import RepairAdminStatus from './RepairAdminStatus';
 import RepairAdminForm from './RepairAdminForm';
+import Customers from './Customers';
 
 const AdminDashboard = () => {
     const [loading, setLoading] = useState(true);
@@ -38,6 +39,8 @@ const AdminDashboard = () => {
                 return <RepairAdminStatus />;
             case 'form':
                 return <RepairAdminForm />;
+            case 'customers':
+                return <Customers />;
             default:
                 return null;
         }
@@ -55,13 +58,19 @@ const AdminDashboard = () => {
                             onClick={() => setActiveTab('status')}
                         >
                             Status
-                        </button>
-                        <button
-                            className={`list-group-item list-group-item-action ${activeTab === 'form' ? 'active' : ''}`}
-                            onClick={() => setActiveTab('form')}
-                        >
-                            Form
-                        </button>
+                            </button>
+                            <button
+                                className={`list-group-item list-group-item-action ${activeTab === 'form' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('form')}
+                            >
+                                Form
+                            </button>
+                            <button
+                                className={`list-group-item list-group-item-action ${activeTab === 'customers' ? 'active' : ''}`}
+                                onClick={() => setActiveTab('customers')}
+                            >
+                                Customers
+                            </button>
                     </div>
                 </div>
                 <div className="col-md-9">

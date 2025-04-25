@@ -73,6 +73,7 @@ const LoginSignup = () => {
                 setSuccessMessage('Login successful!');
                 setIsAuthenticated(true);
                 setUserData({ email: response.email });
+                window.location.reload();
             }
         } catch (error) {
             if (error.response && error.response.status === 423) {

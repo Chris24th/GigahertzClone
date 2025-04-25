@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 const Navigation = () => {
     const [categories, setCategories] = useState([]);
@@ -48,7 +49,7 @@ const Navigation = () => {
     }
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light col-6 col-lg-12">
             <div className="container-fluid">
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
@@ -68,13 +69,15 @@ const Navigation = () => {
                                     {category.name}
                                 </a>
                                 <ul
-                                    className="dropdown-menu"
+                                    className="dropdown-menu border-0.1"
                                     aria-labelledby={`${category.name.toLowerCase().replace(/\s+/g, '')}Dropdown`}
                                 >
                                     {category.subcategories && category.subcategories.map(subcat => (
                                         <li key={subcat.categoryId}>
                                             <NavLink
-                                                className="dropdown-item"
+                                                className={({ isActive }) =>
+                                                    `dropdown-item ${isActive ? 'active-dropdown-item' : ''}`
+                                                }
                                                 to={`/${category.name.toLowerCase().replace(/\s+/g, '-')}/${subcat.name.toLowerCase().replace(/\s+/g, '-')}`}
                                             >
                                                 {subcat.name}

@@ -94,3 +94,20 @@ text-primary {
 .li-hover:hover {
   color: #00BADB !important;
 }
+.dropdown-item:hover {
+  color: #00BADB !important;
+}
+
+.dropdown-item:focus {
+  color: #00BADB !important;
+  background-color: transparent !important;
+}
+
+.active {
+  color: #fff !important;
+  background-color: #0008F1 !important;
+}
+
+.active-dropdown-item {
+  color: #00BADB !important;
+}

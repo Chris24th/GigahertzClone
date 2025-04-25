@@ -11,20 +11,17 @@ const RepairAdminForm = () => {
         customerAddress: '',
         serviceTypeId: 0,
         serviceCenterId: 0,
-        productId: 0,
+        model: '',
+        partsUsed: '',
         serialNumber: '',
         issueDescription: '',
         additionalNotes: '',
-        isWarrantyRepair: false,
-        // Include serviceTypeList and serviceCenterList with proper structure
-        serviceTypeList: [],
-        serviceCenterList: [],
+        isWarrantyRepair: false
     });
 
     // Store the product categories separately since they have a complex structure
     const [serviceTypes, setServiceTypes] = useState([]);
     const [serviceCenters, setServiceCenters] = useState([]);
-    const [productCategories, setProductCategories] = useState([]);
     const [brands, setBrands] = useState(['Asus', 'Acer', 'Lenovo', 'MSI']);
     const [selectedBrand, setSelectedBrand] = useState(null);
 
@@ -41,15 +38,12 @@ const RepairAdminForm = () => {
                 // These would be your actual API endpoints
                 const serviceTypesResponse = await axios.get('https://localhost:44373/api/repairs/types');
                 const serviceCentersResponse = await axios.get('https://localhost:44373/api/repairs/centers');
-                const productCategoriesResponse = await axios.get('https://localhost:44373/api/categories');
 
                 const serviceTypesList = serviceTypesResponse.data || [];
                 const serviceCentersList = serviceCentersResponse.data || [];
-                const productCategoriesList = productCategoriesResponse.data || [];
 
                 setServiceTypes(serviceTypesList);
                 setServiceCenters(serviceCentersList);
-                setProductCategories(productCategoriesList);
                 // Update form data with the retrieved lists
                 setFormData(prev => ({
                     ...prev,
@@ -70,7 +64,6 @@ const RepairAdminForm = () => {
                 }));
 
                 // Store product categories separately
-                setProductCategories(productCategoriesList);
             } catch (error) {
                 console.error('Error fetching form data:', error);
                 setSubmitError('Failed to load form data. Please refresh the page.');
@@ -97,10 +90,9 @@ const RepairAdminForm = () => {
             // Create the payload in the format the API expects
             const payload = {
                 model: { ...formData }, // Wrap the form data in a "model" property
-                productCategories: productCategories // Add the product categories with the correct structure
             };
 
-            const response = await axios.post('https://localhost:44373/api/repairs', payload);
+            const response = await axios.post('https://localhost:44373/api/repairs', payload.model);
 
             if (response.data.success) {
                 setSubmitSuccess(true);
@@ -114,14 +106,14 @@ const RepairAdminForm = () => {
                     customerAddress: '',
                     serviceTypeId: 0,
                     serviceCenterId: 0,
-                    productId: 0,
+                    model: '',
+                    partsUsed: '',
                     serialNumber: '',
                     issueDescription: '',
                     additionalNotes: '',
-                    isWarrantyRepair: false,
-                    serviceTypeList: formData.serviceTypeList,
-                    serviceCenterList: formData.serviceCenterList
+                    isWarrantyRepair: false
                 });
+
             } else {
                 setSubmitError(response.data.message || 'Submission failed');
             }
@@ -152,7 +144,7 @@ const RepairAdminForm = () => {
             <div className="row">
                 <div className="col-md-8 mx-auto">
                     <div className="card shadow">
-                        <div className="card-header bg-primary text-white">
+                        <div className="card-header bg-blue text-white">
                             <h2 className="h4 mb-0">Electronics Repair Request</h2>
                         </div>
 
@@ -291,12 +283,12 @@ const RepairAdminForm = () => {
                                             </select>
                                         </div>
                                         <div className="col-md-6">
-                                            <label htmlFor="productId" className="form-label">Product ID</label>
+                                                <label htmlFor="model" className="form-label">Model</label>
                                             <input
                                                 type="text"
                                                 className="form-control"
-                                                id="productId"
-                                                name="productId"
+                                                    id="model"
+                                                    name="model"
                                                 onChange={handleInputChange}
                                                 required
                                             />

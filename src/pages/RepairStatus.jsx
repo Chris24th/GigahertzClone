@@ -27,13 +27,13 @@ const RepairStatus = () => {
 
         try {
             // Get repair request details
-            const requestResponse = await axios.get(`/api/repairs/${requestId}`);
+            const requestResponse = await axios.get(`https://localhost:44373/api/repairs/${requestId}`);
 
             if (requestResponse.data.success) {
                 setRepairRequest(requestResponse.data.data);
 
                 // Get status updates
-                const statusResponse = await axios.get(`/api/repairs/status/${requestId}`);
+                const statusResponse = await axios.get(`https://localhost:44373/api/repairs/status/${requestId}`);
 
                 if (statusResponse.data.success) {
                     setStatusUpdates(statusResponse.data.data);
@@ -161,20 +161,24 @@ const RepairStatus = () => {
                                         <div className="card-body">
                                             <div className="row">
                                                 <div className="col-md-6">
-                                                    <p><strong>Request ID:</strong> #{repairRequest.requestId}</p>
-                                                    <p><strong>Customer:</strong> {repairRequest.customer.name}</p>
+                                                    <p><strong>Request ID:</strong> #{repairRequest.requestId || 'N/A'}</p>
+                                                    <p><strong>Customer ID:</strong> {repairRequest.customerId || 'N/A'}</p>
+                                                    <p><strong>Customer:</strong> {repairRequest.customer?.name || 'N/A'}</p>
                                                     <p><strong>Product:</strong> {repairRequest.product?.name || 'N/A'}</p>
-                                                    <p><strong>Serial Number:</strong> {repairRequest.serialNumber}</p>
+                                                    <p><strong>Serial Number:</strong> {repairRequest.serialNumber || 'N/A'}</p>
+                                                    <p><strong>Model:</strong> {repairRequest.model || 'N/A'}</p>
+                                                    <p><strong>Parts Used:</strong> {repairRequest.partsUsed || 'N/A'}</p>
                                                 </div>
                                                 <div className="col-md-6">
                                                     <p><strong>Service Type:</strong> {repairRequest.serviceType?.name || 'N/A'}</p>
                                                     <p><strong>Service Center:</strong> {repairRequest.serviceCenter?.name || 'N/A'}</p>
-                                                    <p><strong>Request Date:</strong> {formatDate(repairRequest.requestDate)}</p>
-                                                    <p>
-                                                        <strong>Warranty Repair:</strong>
-                                                        {repairRequest.isWarrantyRepair ? 'Yes' : 'No'}
-                                                    </p>
+                                                    <p><strong>Request Date:</strong> {repairRequest.requestDate ? formatDate(repairRequest.requestDate) : 'N/A'}</p>
+                                                    <p><strong>Expected Completion Date:</strong> {repairRequest.expectedCompletionDate ? formatDate(repairRequest.expectedCompletionDate) : 'N/A'}</p>
+                                                    <p><strong>Warranty Repair:</strong> {repairRequest.isWarrantyRepair ? 'Yes' : 'No'}</p>
+                                                    <p><strong>Estimated Cost:</strong> {repairRequest.estimatedCost ? `$${repairRequest.estimatedCost}` : 'N/A'}</p>
+                                                    <p><strong>Additional Notes:</strong> {repairRequest.additionalNotes || 'N/A'}</p>
                                                 </div>
+
                                             </div>
 
                                             <div className="mt-3">
@@ -231,10 +235,17 @@ const RepairStatus = () => {
                                                                     <small className="text-muted">{formatDate(status.updatedDate)}</small>
                                                                 </div>
                                                                 <div className="card-body py-2">
-                                                                    <p className="mb-0">{status.notes}</p>
+                                                                    {status.notes && (
+                                                                        <p className="mb-0">Notes: {status.notes}</p>
+                                                                    )}
                                                                     {status.partsUsed && (
                                                                         <p className="small text-muted mt-1 mb-0">
                                                                             <strong>Parts used:</strong> {status.partsUsed}
+                                                                        </p>
+                                                                    )}
+                                                                    {status.partsCost && (
+                                                                        <p className="small text-muted mt-1 mb-0">
+                                                                            <strong>Parts cost:</strong> {status.partsCost}
                                                                         </p>
                                                                     )}
                                                                 </div>
