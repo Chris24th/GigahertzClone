@@ -121,7 +121,7 @@ const RepairStatus = () => {
             <div className="row">
                 <div className="col-md-8 mx-auto">
                     <div className="card shadow">
-                        <div className="card-header bg-primary text-white">
+                        <div className="card-header bg-blue text-white">
                             <h2 className="h4 mb-0">Track Your Repair Status</h2>
                         </div>
 
@@ -197,7 +197,7 @@ const RepairStatus = () => {
 
                                     <div className="card mb-4">
                                         <div className="card-header bg-light">
-                                            <h3 className="h5 mb-0">Current Status: <span className="badge bg-primary">{getCurrentStatus()}</span></h3>
+                                            <h3 className="h5 mb-0">Current Status: <span className="badge bg-blue">{getCurrentStatus()}</span></h3>
                                         </div>
                                         <div className="card-body">
                                             <div className="progress mb-3" style={{ height: '25px' }}>

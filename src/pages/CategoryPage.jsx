@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useSearchParams } from 'react-router-dom';
+import axios from 'axios';
 
 const CategoryPage = ({ title, categoryId }) => {
     const [products, setProducts] = useState([]);
@@ -143,6 +144,36 @@ const CategoryPage = ({ title, categoryId }) => {
             ...prev,
             [filterName]: !prev[filterName]
         }));
+    };
+
+    const handleAddToCart = async (productId) => {
+        try {
+            const response = await axios.post('https://localhost:44373/api/CartApi/add', {
+                productId: productId,
+                quantity: 1
+            }, {
+                // Important: Include withCredentials to ensure cookies are sent
+                withCredentials: true
+            });
+
+            // You could add some user feedback here based on the response
+            console.log('Product added to cart successfully:', response.data);
+
+            // The response.data now contains:
+            // - message: Success message
+            // - cart: Updated cart details
+
+            // Optional: Update cart count in header/navigation
+            if (response.data.cart && response.data.cart.totalItems) {
+                // If you have a cart counter in your UI, update it
+                // updateCartCounter(response.data.cart.totalItems);
+            }
+        } catch (error) {
+            console.error('Error adding product to cart:', error.response ? error.response.data : error.message);
+
+            // Optional: Show error message to user
+            // Example: toast.error(error.response?.data?.message || 'Failed to add product to cart');
+        }
     };
 
     return (
@@ -750,7 +781,7 @@ const CategoryPage = ({ title, categoryId }) => {
                                                         <button
                                                             className="btn btn-primary w-100"
                                                             disabled={product.stocks <= 0}
-                                                            onClick={() => alert(`Added ${product.name} to cart`)}
+                                                            onClick={() => handleAddToCart(product.productId)}
                                                         >
                                                             Add to cart
                                                         </button>

@@ -4,7 +4,6 @@ import { FaPhoneAlt } from 'react-icons/fa';
 import axios from 'axios';
 
 export default function GigahertzServicePage() {
-    const [validated, setValidated] = useState(false);
     const [activeAccordion, setActiveAccordion] = useState(null);
 
     const [formData, setFormData] = useState({
@@ -49,9 +48,9 @@ export default function GigahertzServicePage() {
                 subject: `${formData.brand} Laptop Repair - ${formData.replacementParts}`,
                 message: formData.message
             };
-
-            const response = await axios.post('/api/contact', submitData);
-
+            console.log('Submitting data:', submitData);
+            const response = await axios.post('https://localhost:44373/api/contact', submitData);
+            console.log('Response:', response.data);
             if (response.data.success) {
                 setSuccess(true);
                 // Reset form
@@ -212,30 +211,22 @@ export default function GigahertzServicePage() {
                 </div> */}
 
                 {/* Repair form */}
-                <div className="container my-5">
+                <div className="container my-5 ">
                     <div className="row justify-content-center">
                         <div className="col-md-10">
                             <div className="card border-0 shadow-sm">
                                 <div className="card-body p-4">
                                     <h3 className="text-center text-blue mb-4">Contact Us for Expert Laptop Repair & Service</h3>
 
-                                    <div className="row">
-                                        <div className="col-lg-4 text-center mb-4 mb-lg-0">
-                                            <div style={{ backgroundColor: '#f8f9ff', borderRadius: '50%', width: '280px', height: '280px', margin: '0 auto', position: 'relative' }}>
-                                                <img
-                                                    src="/assets/technician.png"
-                                                    alt="Laptop Technician"
-                                                    className="img-fluid p-3"
-                                                    style={{ maxWidth: '100%', maxHeight: '100%', position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)' }}
-                                                    onError={(e) => {
-                                                        e.target.onerror = null;
-                                                        e.target.src = 'https://dummyimage.com/250x250?text=Technician';
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
+                                    <div className="d-flex row justify-content-center align-items-center">
+                                        <img    
+                                            src="/assets/technician-animated.png"
+                                            alt="Laptop Technician"
+                                            className="col-lg-5"
+                                            style={{ maxWidth: '350px', objectFit: 'cover' }}
+                                        />
 
-                                        <div className="col-lg-8">
+                                        <div className="col-lg-7">
                                             {success ? (
                                                 <div className="alert alert-success">
                                                     Thank you for your submission! We'll contact you shortly.
@@ -454,7 +445,7 @@ export default function GigahertzServicePage() {
                 </div>
 
                 {/* FAQ div */}
-                <div className="py-5" style={{ maxWidth: '900px' }}>
+                <div className="py-5" style={{ width: '900px' }}>
                     <div className="container" >
                         <h2 className="text-center mb-5">Frequently Asked Questions</h2>
                         <div className="row justify-content-center">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     FaStar,
     FaRegStar,
@@ -7,663 +7,430 @@ import {
     FaHeadset,
     FaExchangeAlt
 } from 'react-icons/fa';
-
-// Mock data for carousel slides
-const carouselSlides = [
-    {
-        id: 1,
-        imageUrl: "https://dummyimage.com/2400x880/212529",
-        altText: "iPhone 15 series",
-        title: "THE NEWEST IPHONE 15 SERIES",
-        subtitle: "Experience the revolutionary features of the latest iPhone",
-        buttonText: "SHOP NOW"
-    },
-    {
-        id: 2,
-        imageUrl: "https://dummyimage.com/2400x880/212529",
-        altText: "Apple Watch Series 9",
-        title: "APPLE WATCH SERIES 9",
-        subtitle: "Smarter. Brighter. Mightier.",
-        buttonText: "SHOP NOW"
-    },
-    {
-        id: 3,
-        imageUrl: "https://dummyimage.com/2400x880/212529",
-        altText: "MacBook Pro with M2 Chip",
-        title: "MACBOOK PRO WITH M2 CHIP",
-        subtitle: "Power. Unleashed.",
-        buttonText: "SHOP NOW"
-    }
-];
-
-// Mock data for featured categories
-const featuredCategories = [
-    {
-        id: 1,
-        name: "Laptops",
-        imageUrl: "https://dummyimage.com/500x500/4682b4 ",
-        url: "/collections/iphone"
-    },
-    {
-        id: 2,
-        name: "Handheld",
-        imageUrl: "https://dummyimage.com/500x500/1e90ff ",
-        url: "/collections/ipad"
-    },
-    {
-        id: 3,
-        name: "Desktops",
-        imageUrl: "https://dummyimage.com/500x500/17a2b8 ",
-        url: "/collections/mac"
-    },
-    {
-        id: 4,
-        name: "Watch",
-        imageUrl: "https://dummyimage.com/500x500/6c757d ",
-        url: "/collections/apple-watch"
-    },
-    {
-        id: 5,
-        name: "Components",
-        imageUrl: "https://dummyimage.com/500x500/0056b3 ",
-        url: "/collections/airpods"
-    },
-    {
-        id: 6,
-        name: "Accessories",
-        imageUrl: "https://dummyimage.com/500x500/007bff ",
-        url: "/collections/accessories"
-    }
-];
-
-// Mock data for featured products
-const featuredProducts = [
-    {
-        id: 1,
-        name: "iPhone 15 Pro 256GB Natural Titanium",
-        price: 78990,
-        originalPrice: 79990,
-        imageUrl: "https://www.gigahertz.com.ph/cdn/shop/products/iPhone_15_Pro_Natural_Titanium_PDP_Image_Position-1__WWEN_medium.jpg",
-        rating: 5,
-        isNew: true,
-        tag: "Save ₱1,000"
-    },
-    {
-        id: 2,
-        name: "MacBook Pro 14-inch with M2 Pro Chip",
-        price: 116990,
-        originalPrice: 119990,
-        imageUrl: "https://www.gigahertz.com.ph/cdn/shop/products/mbp-spacegray-gallery1-202206_GEO_US_medium.jpg",
-        rating: 4,
-        isNew: true,
-        tag: "Save ₱3,000"
-    },
-    {
-        id: 3,
-        name: "iPad Pro M2 11-inch Wi-Fi 128GB",
-        price: 54990,
-        originalPrice: 54990,
-        imageUrl: "https://www.gigahertz.com.ph/cdn/shop/products/iPad_Pro_11-inch_Wi-Fi_Space_Gray_PDP_Image_Position-1b__WWEN_medium.jpg",
-        rating: 5,
-        isNew: false
-    },
-    {
-        id: 4,
-        name: "Apple Watch Series 9 GPS 41mm",
-        price: 24990,
-        originalPrice: 25990,
-        imageUrl: "https://www.gigahertz.com.ph/cdn/shop/products/MT6J3ref_VW_34FR_watch-45-alum-midnight-nc-9s_VW_34FR_WF_CO_GEO_US_medium.jpg",
-        rating: 4.5,
-        isNew: true,
-        tag: "Save ₱1,000"
-    },
-    {
-        id: 5,
-        name: "AirPods Pro (2nd Generation) with MagSafe Case",
-        price: 14990,
-        originalPrice: 15990,
-        imageUrl: "https://www.gigahertz.com.ph/cdn/shop/products/MME73_AV1_medium.jpg",
-        rating: 5,
-        isNew: false,
-        tag: "Save ₱1,000"
-    },
-    {
-        id: 6,
-        name: "iPhone 15 128GB Black",
-        price: 56990,
-        originalPrice: 57990,
-        imageUrl: "https://www.gigahertz.com.ph/cdn/shop/products/iPhone15_Black_PDP_Image_position-1a_WWEN_medium.jpg",
-        rating: 4.5,
-        isNew: true,
-        tag: "Save ₱1,000"
-    },
-    {
-        id: 7,
-        name: "Apple Watch Ultra 2 49mm Titanium Case",
-        price: 54990,
-        originalPrice: 54990,
-        imageUrl: "https://www.gigahertz.com.ph/cdn/shop/products/MQER3ref_VW_34FR_watch-49-titanium-ultra2_VW_34FR_WF_CO_GEO_US_medium.jpg",
-        rating: 5,
-        isNew: true
-    },
-    {
-        id: 8,
-        name: "AirPods (3rd Generation) with Lightning Charging Case",
-        price: 10990,
-        originalPrice: 11990,
-        imageUrl: "https://www.gigahertz.com.ph/cdn/shop/products/MME73_AV1_medium.jpg",
-        rating: 4,
-        isNew: false,
-        tag: "Save ₱1,000"
-    }
-];
-
-// Mock data for promotion banners
-const promotionBanners = [
-    {
-        id: 1,
-        imageUrl: "https://dummyimage.com/1200x628/00BADB",
-        altText: "30% off on all accessories",
-        url: "/collections/accessories"
-    },
-    {
-        id: 2,
-        imageUrl: "https://dummyimage.com/1200x628/00BADB",
-        altText: "iPhone trade-in special offers",
-        url: "/pages/trade-in"
-    }
-];
-
-// Mock data for services div
-const services = [
-    {
-        id: 1,
-        title: "REPAIR & SERVICE",
-        imageUrl: "https://dummyimage.com/500x500/00BADB",
-        description: "Professional Apple device repair and maintenance",
-        url: "/pages/repair-and-service"
-    },
-    {
-        id: 2,
-        title: "TRADE-IN",
-        imageUrl: "https://dummyimage.com/500x500/00BADB",
-        description: "Trade your old device for a new one",
-        url: "/pages/trade-in"
-    },
-    {
-        id: 3,
-        title: "APPLE SERVICE",
-        imageUrl: "https://dummyimage.com/500x500/00BADB",
-        description: "Authorized Apple Service Provider",
-        url: "/pages/apple-service"
-    }
-];
-
-// Trust badges data
-const trustBadges = [
-    {
-        id: 1,
-        icon: <FaTruck className="fs-2 text-primary mb-3" />,
-        title: "FREE SHIPPING",
-        description: "On orders over ₱5,000"
-    },
-    {
-        id: 2,
-        icon: <FaShieldAlt className="fs-2 text-primary mb-3" />,
-        title: "SECURE PAYMENT",
-        description: "100% secure payment"
-    },
-    {
-        id: 3,
-        icon: <FaHeadset className="fs-2 text-primary mb-3" />,
-        title: "24/7 SUPPORT",
-        description: "Dedicated support"
-    },
-    {
-        id: 4,
-        icon: <FaExchangeAlt className="fs-2 text-primary mb-3" />,
-        title: "14-DAY RETURNS",
-        description: "Money back guarantee"
-    }
-];
+import { ChevronLeft, ChevronRight, Search, ShoppingCart, User, Heart, Menu } from 'lucide-react';
+import './Home.css'; // Import your CSS file for custom styles
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [visibleProducts, setVisibleProducts] = useState(3);
+    const [products, setProducts] = useState([]);
+    const [activeHeroSlide, setActiveHeroSlide] = useState(0);
+    const [activeTabIndex, setActiveTabIndex] = useState(0);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const containerRef = useRef(null);
+    const navigate = useNavigate();
 
-    // Simulate loading effect
+    const heroSlides = [
+        {
+            id: 1,
+            image: "https://www.gigahertz.com.ph/cdn/shop/files/GAMING_HERO_homepage.jpg?v=1738546275&width=1600",
+            link: "/laptops/gaming-laptops"
+        },
+        {
+            id: 2,
+            image: "https://www.gigahertz.com.ph/cdn/shop/files/PERIPHALS_homepage.jpg?v=1738546192&width=1600",
+            link: "/components/sodimm-ram"
+        },
+    ];
+
+    const tabsContent = [
+        { id: "featured", name: "Featured" },
+        { id: "best-sellers", name: "Best Sellers" },
+        { id: "new-arrivals", name: "New Arrivals" },
+    ];
+
+    const productCategories = [
+        {
+            name: "Laptops",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/LAPTOP.png?v=1743733582&width=375",
+            link: "/laptops/gaming-laptops"
+        },
+        {
+            name: "Desktops",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/DESKTOP.png?v=1743733582&width=375",
+            link: "/desktops/gaming-entry"
+        },
+        {
+            name: "Consoles",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/CONSOLE_2b7ab6ea-da26-43bd-8b28-246c51a087b3.png?v=1743733581&width=375",
+            link: "/handheld-devices/consoles"
+        },
+        {
+            name: "Handhelds",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/TABLETS_d2206e66-03d1-45d3-a6eb-932ca7167266.png?v=1743733582&width=375",
+            link: "/handheld-devices/Tablets"
+        },
+        {
+            name: "Replacement Parts",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/PARTS_88c7c0c8-5644-41e9-b880-49efb9383635.png?v=1743733582&width=375",
+            link: "/replacement-parts/lcd-replacement-parts"
+        },
+        {
+            name: "Components",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/HDD_9e32d20e-935b-4b99-9b44-f797f09d9dea.png?v=1743733582&width=375",
+            link: "/components/sodimm-ram"
+        },
+    ];
+
+    const featuredBrands = [
+        {
+            name: "Acer",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/Landing_page-brands_Button-Acer-min_b05e0a18-34c5-45e9-8e9b-1d22982465e6.jpg?v=1721711557&width=375"
+        },
+        {
+            name: "Asus",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/Landing_page-brands_ASUS_BUTTON-min_1e12f0ad-9449-448f-84e2-c68b5eb0aa87.jpg?v=1721711557&width=375"
+        },
+        {
+            name: "Dell",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/dell_button-min_86718d07-762d-493f-821d-bb52cac3916b.jpg?v=1721711557&width=375"
+        },
+        {
+            name: "Lenovo",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/Landing_page-brands_BUTTON_-_LENOVO-min_27d578b7-1562-4d3b-8c58-a4eecf1c92a1.jpg?v=1721711558&width=375"
+        },
+        {
+            name: "MSI",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/Landing_page-brands_MSI_BUTTON-min_d44cd0f4-ae94-42f3-8a85-41c786011ff1.jpg?v=1721711557&width=375"
+        },
+        {
+            name: "HP",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/hp_button_59f18de7-760e-458e-9840-e212a3e4a860.jpg?v=1721711558&width=375"
+        },
+        {
+            name: "Samsung",
+            image: "https://cdn.shopify.com/s/files/1/0564/4694/3414/files/SAMSUNG_60db9b6e-02ae-4801-b947-b420d0dff779.jpg?v=1721711557&width=375"
+        }
+    ];
+
+    const nextHeroSlide = () => {
+        setActiveHeroSlide((prev) => (prev + 1) % heroSlides.length);
+    };
+
+    const prevHeroSlide = () => {
+        setActiveHeroSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+    };
+
     useEffect(() => {
-        setTimeout(() => {
-            setIsLoaded(true);
-        }, 500);
+        fetchProducts();
     }, []);
 
-    // Auto carousel functionality
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentSlide((prevSlide) => (prevSlide + 1) % carouselSlides.length);
-        }, 5000);
-        return () => clearInterval(interval);
-    }, []);
+    const fetchProducts = async () => {
+        try {
+            const result1 = await fetch('https://localhost:44373/api/products/category/43');
+            const result2 = await fetch('https://localhost:44373/api/products/category/48');
+            const gamingLaptops = await result1.json();
+            const gamingDesktops = await result2.json();
+            if (gamingLaptops.success || gamingDesktops.success) {
+                setProducts([
+                    ...gamingLaptops.data.products.filter(product => product.stocks > 0).slice(0, 5),
+                    ...gamingDesktops.data.products.filter(product => product.stocks > 0).slice(0, 5)
+                ]);
+            } else {
+                console.error('Failed to load products');
+            }
+        } catch (error) {
+            console.error('Error fetching products:', error);
+        }
+    }
 
-    // Carousel navigation
-    const goToPreviousSlide = () => {
-        setCurrentSlide((prevSlide) => (prevSlide === 0 ? carouselSlides.length - 1 : prevSlide - 1));
-    };
-
-    const goToNextSlide = () => {
-        setCurrentSlide((prevSlide) => (prevSlide + 1) % carouselSlides.length);
-    };
-
-    const goToSlide = (index) => {
-        setCurrentSlide(index);
-    };
-
-    // Show more products
-    const handleViewMore = () => {
-        setVisibleProducts(prev =>
-            prev + 4 <= featuredProducts.length ? prev + 4 : featuredProducts.length
-        );
-    };
-
-    // Format price to Philippine Peso
-    const formatPrice = (price) => {
-        return new Intl.NumberFormat('en-PH', {
-            style: 'currency',
-            currency: 'PHP',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0
+    const formatPriceWithoutSymbol = (price) => {
+        return new Intl.NumberFormat('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
         }).format(price);
     };
 
-    // Generate star rating component
-    const renderRating = (rating) => {
-        const stars = [];
-        const fullStars = Math.floor(rating);
-        const hasHalfStar = rating % 1 !== 0;
+    const scrollToNext = () => {
+        if (containerRef.current) {
+            const container = containerRef.current;
+            const cardWidth = container.querySelector('.product-card').offsetWidth + 16; // Width + margin
+            container.scrollBy({ left: cardWidth, behavior: 'smooth' });
 
-        for (let i = 0; i < fullStars; i++) {
-            stars.push(<FaStar key={`full-${i}`} className="text-warning" />);
+            // Update current index
+            if (currentIndex < products.length - 1) {
+                setCurrentIndex(currentIndex + 1);
+            }
         }
+    };
 
-        if (hasHalfStar) {
-            stars.push(<FaStar key="half" className="text-warning" />);
+    const scrollToPrev = () => {
+        if (containerRef.current) {
+            const container = containerRef.current;
+            const cardWidth = container.querySelector('.product-card').offsetWidth + 16; // Width + margin
+            container.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+
+            // Update current index
+            if (currentIndex > 0) {
+                setCurrentIndex(currentIndex - 1);
+            }
         }
-
-        const emptyStars = 5 - stars.length;
-        for (let i = 0; i < emptyStars; i++) {
-            stars.push(<FaRegStar key={`empty-${i}`} className="text-muted" />);
-        }
-
-        return <div className="d-flex gap-1 mb-2">{stars}</div>;
     };
 
     return (
-        <div className={`fade ${isLoaded ? 'show' : ''}`} style={{ transition: 'opacity 0.5s ease' }}>
+        <div className="container-fluid p-0">
+            {/* Mobile Navigation Bar */}
+            <div className="d-md-none bg-dark text-white p-3">
+                <div className="d-flex justify-content-between align-items-center">
+                    <Menu size={24} />
+                    <div className="d-flex">
+                        <Search className="me-3" size={24} />
+                        <ShoppingCart className="me-3" size={24} />
+                        <User size={24} />
+                    </div>
+                </div>
+            </div>
+
             {/* Hero Carousel */}
-            <div id="heroCarousel" className="carousel slide mb-5" data-bs-ride="carousel">
-                <div className="carousel-inner">
-                    {carouselSlides.map((slide, index) => (
-                        <div
-                            key={slide.id}
-                            className={`carousel-item ${index === currentSlide ? 'active' : ''}`}
-                            style={{ transition: 'transform 0.6s ease' }}
-                        >
-                            <img
-                                src={slide.imageUrl}
-                                className="d-block w-100"
-                                alt={slide.altText}
-                            />
-                            <div className="carousel-caption d-none d-md-block text-start" style={{ bottom: 'auto', top: '50%', transform: 'translateY(-50%)' }}>
-                                <div className="container">
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <h1 className="fw-bold display-5 text-shadow">{slide.title}</h1>
-                                            <p className="lead text-shadow mb-4">{slide.subtitle}</p>
-                                            <a href="#" className="btn btn-primary btn-lg fw-semibold px-4 py-2">
-                                                {slide.buttonText}
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <button
-                    className="carousel-control-prev"
-                    type="button"
-                    onClick={goToPreviousSlide}
-                >
-                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span className="visually-hidden">Previous</span>
-                </button>
-                <button
-                    className="carousel-control-next"
-                    type="button"
-                    onClick={goToNextSlide}
-                >
-                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span className="visually-hidden">Next</span>
-                </button>
-                <div className="carousel-indicators">
-                    {carouselSlides.map((_, index) => (
-                        <button
-                            key={index}
-                            type="button"
-                            onClick={() => goToSlide(index)}
-                            className={index === currentSlide ? 'active' : ''}
-                            aria-current={index === currentSlide ? 'true' : 'false'}
-                            aria-label={`Slide ${index + 1}`}
-                        ></button>
-                    ))}
-                </div>
-            </div>
-
-            {/* Featured Categories */}
-            <div className="py-5 bg-light">
-                <div className="container">
-                    <h2 className="text-center fw-bold mb-4 position-relative pb-3">
-                        SHOP BY CATEGORY
-                        <span className="position-absolute start-50 translate-middle-x" style={{ bottom: 0, width: '60px', height: '3px', background: '#007bff' }}></span>
-                    </h2>
-                    <div className="row g-4">
-                        {featuredCategories.map(category => (
-                            <div key={category.id} className="col-6 col-md-4 col-lg-2">
-                                <a
-                                    href={category.url}
-                                    className="text-decoration-none text-dark"
-                                >
-                                    <div className="card border-0 shadow-sm h-100 transition-transform" style={{ transform: 'translateY(0)', transition: 'transform 0.3s' }}>
-                                        <div className="card-body text-center p-3">
-                                            <div className="mb-3">
-                                                <img
-                                                    src={category.imageUrl}
-                                                    alt={category.name}
-                                                    className="img-fluid transition-transform"
-                                                    style={{ transition: 'transform 0.5s' }}
-                                                />
-                                            </div>
-                                            <h5 className="fw-semibold">{category.name}</h5>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Featured Products */}
-            <div className="py-5">
-                <div className="container">
-                    <h2 className="text-center fw-bold mb-4 position-relative pb-3">
-                        FEATURED PRODUCTS
-                        <span className="position-absolute start-50 translate-middle-x" style={{ bottom: 0, width: '60px', height: '3px', background: '#007bff' }}></span>
-                    </h2>
-
-                    {featuredProducts.slice(0, visibleProducts).length === 0 ? (
-                        <div className="alert alert-info">No featured products available.</div>
-                    ) : (
-                        <div className="row g-4 mb-4">
-                            {featuredProducts.slice(0, visibleProducts).map(product => {
-                                // Calculate the discount percentage
-                                const originalPrice = product.originalPrice || (product.price * 1.25); // If originalPrice is not available, simulate one
-                                const discountPercentage = Math.round((1 - (product.price / originalPrice)) * 100);
-                                const savings = originalPrice - product.price;
-
-                                return (
-                                    <div key={product.id} className="col-md-4 mb-4">
-                                        <div className="card h-100 border-0 shadow-sm position-relative">
-                                            {/* Discount badge */}
-                                            {product.price < product.originalPrice && (
-                                                <div className="position-absolute start-0 top-0 bg-danger text-white py-1 px-2 m-2">
-                                                    Save {formatPrice(product.originalPrice - product.price)}
-                                                </div>
-                                            )}
-
-                                            {/* Brand logo */}
-                                            <div className="position-absolute end-0 top-0 p-1 m-2">
-                                                <img
-                                                    src="https://dummyimage.com/80x30/0008F1/ffffff&text=Gigahertz"
-                                                    alt="Gigahertz"
-                                                    className="img-fluid"
-                                                    style={{ height: '30px', objectFit: 'fill' }}
-                                                />
-                                            </div>
-
-                                            {/* Product image */}
-                                            <div className="text-center pt-4 pb-2">
-                                                {product.imageUrl ? (
-                                                    <img
-                                                        src={`https://dummyimage.com/500x500/00BADB/ffffff&text=${product.name}`}
-                                                        className="img-fluid"
-                                                        alt={product.name}
-                                                        style={{ height: '200px', objectFit: 'fill' }}
-                                                    />
-                                                ) : (
-                                                    <div
-                                                        className="bg-light d-flex align-items-center justify-content-center"
-                                                        style={{ height: '180px' }}
-                                                    >
-                                                        <span className="text-muted">No image available</span>
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Best seller badge */}
-                                            {product.isNew && (
-                                                <div className="position-absolute start-0 bottom-0 m-2">
-                                                    <div className="rounded-circle bg-warning text-white d-flex align-items-center justify-content-center" style={{ width: '50px', height: '50px', fontSize: '0.7rem', textAlign: 'center', fontWeight: 'bold' }}>
-                                                        NEW
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* Product details */}
-                                            <div className="card-body d-flex flex-column">
-                                                <div className="mb-2">
-                                                    <h6 className="card-title fw-bold text-blue mb-1">{product.name}</h6>
-                                                    <p className="text-muted small mb-0">{product.subtitle || ''}</p>
-                                                </div>
-
-                                                {/* Rating */}
-                                                <div className="specs-summary small text-secondary my-2">
-                                                    {renderRating(product.rating)}
-                                                </div>
-
-                                                {/* Price and stock info */}
-                                                <div className="mt-auto">
-                                                    <div className="mb-2">
-                                                        <h5 className="fw-bold text-danger mb-0">{formatPrice(product.price)}</h5>
-                                                        {product.price < product.originalPrice && (
-                                                            <small className="text-decoration-line-through text-muted">{formatPrice(product.originalPrice)}</small>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Stock status */}
-                                                    <div className="d-flex align-items-center mb-3">
-                                                        <span className="text-success me-2">●</span>
-                                                        <small className="text-success">In stock</small>
-                                                    </div>
-
-                                                    {/* Add to cart button */}
-                                                    <button
-                                                        className="btn btn-primary w-100"
-                                                        onClick={() => alert(`Added ${product.name} to cart`)}
-                                                    >
-                                                        Add to cart
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                            </div>
-                    )}
-
-                    {visibleProducts < featuredProducts.length && (
-                        <div className="text-center mt-4">
-                            <button onClick={handleViewMore} className="btn btn-outline-primary px-4 py-2 fw-semibold">
-                                VIEW MORE PRODUCTS
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </div>
-
-            {/* Promotion Banners */}
-            <div className="py-5 bg-light">
-                <div className="container">
-                    <div className="row g-4">
-                        {promotionBanners.map(banner => (
-                            <div key={banner.id} className="col-12 col-md-6">
-                                <a
-                                    href={banner.url}
-                                    className="d-block rounded overflow-hidden shadow-sm transition-transform"
-                                    style={{ transition: 'transform 0.3s' }}
-                                >
-                                    <img
-                                        src={banner.imageUrl}
-                                        alt={banner.altText}
-                                        className="img-fluid w-100"
-                                    />
-                                </a>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Services div */}
-            <div className="py-5">
-                <div className="container">
-                    <h2 className="text-center fw-bold mb-4 position-relative pb-3">
-                        OUR SERVICES
-                        <span className="position-absolute start-50 translate-middle-x" style={{ bottom: 0, width: '60px', height: '3px', background: '#007bff' }}></span>
-                    </h2>
-                    <div className="row g-4">
-                        {services.map(service => (
-                            <div key={service.id} className="col-12 col-md-4">
-                                <div className="card h-100 border-0 shadow-sm overflow-hidden">
-                                    <div className="overflow-hidden">
-                                        <img
-                                            src={service.imageUrl}
-                                            alt={service.title}
-                                            className="card-img-top transition-transform"
-                                            style={{ transition: 'transform 0.5s' }}
-                                        />
-                                    </div>
-                                    <div className="card-body text-center p-4">
-                                        <h3 className="card-title fs-5 fw-bold text-blue mb-2">{service.title}</h3>
-                                        <p className="card-text text-muted mb-4">{service.description}</p>
-                                        <a href={service.url} className="btn btn-outline-primary px-4 fw-semibold">
-                                            LEARN MORE
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </div>
-
-            {/* Newsletter div */}
-            <div className="py-5 bg-blue">
-                <div className="container">
-                    <div className="row align-items-center text-white">
-                        <div className="col-12 col-md-6 mb-4 mb-md-0">
-                            <h2 className="fw-bold mb-2">SUBSCRIBE TO OUR NEWSLETTER</h2>
-                            <p className="mb-0 opacity-75">Get the latest updates on new products and upcoming sales</p>
-                        </div>
-                        <div className="col-12 col-md-6">
-                            <form className="d-flex">
-                                <input
-                                    type="email"
-                                    className="form-control form-control-lg me-2"
-                                    placeholder="Your email address"
-                                    required
+            <div className="position-relative">
+                <div className="carousel slide">
+                    <div className="carousel-inner">
+                        {heroSlides.map((slide, index) => (
+                            <div
+                                key={slide.id}
+                                className={`carousel-item ${index === activeHeroSlide ? 'active' : ''}`}
+                            >
+                                <img
+                                    src={slide.image}
+                                    className="d-block w-100"
+                                    alt={`Hero Banner ${slide.id}`}
+                                    style={{ height: "auto", maxHeight: "520px", objectFit: "cover" }}
+                                    onClick={() => navigate(slide.link)}
                                 />
-                                <button type="submit" className="btn btn-light btn-lg fw-semibold px-4">
-                                    SUBSCRIBE
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Trust Badges */}
-            <div className="py-5 bg-light">
-                <div className="container">
-                    <div className="row g-4 text-center">
-                        {trustBadges.map(badge => (
-                            <div key={badge.id} className="col-6 col-md-3">
-                                <div className="p-3">
-                                    {badge.icon}
-                                    <h4 className="fs-6 fw-bold mb-1">{badge.title}</h4>
-                                    <p className="small text-muted mb-0">{badge.description}</p>
-                                </div>
                             </div>
+                        ))}
+                    </div>
+                    <button
+                        className="carousel-control-prev bg-white rounded-circle"
+                        style={{ width: "40px", height: "40px", top: "50%", transform: "translateY(-50%)", left: "20px" }}
+                        onClick={prevHeroSlide}
+                    >
+                        <ChevronLeft className="text-dark" size={20} />
+                    </button>
+                    <button
+                        className="carousel-control-next bg-white rounded-circle"
+                        style={{ width: "40px", height: "40px", top: "50%", transform: "translateY(-50%)", right: "20px" }}
+                        onClick={nextHeroSlide}
+                    >
+                        <ChevronRight className="text-dark" size={20} />
+                    </button>
+                    <div className="carousel-indicators position-absolute bottom-0">
+                        {heroSlides.map((_, index) => (
+                            <button
+                                key={index}
+                                className={`rounded-circle mx-1 ${index === activeHeroSlide ? 'bg-primary' : 'bg-secondary'}`}
+                                style={{ width: "10px", height: "10px" }}
+                                onClick={() => setActiveHeroSlide(index)}
+                            ></button>
                         ))}
                     </div>
                 </div>
             </div>
 
-            {/* Authorized Reseller */}
-            <div className="py-5">
-                <div className="container">
-                    <div className="text-center">
-                        <h2 className="fw-bold mb-4 position-relative pb-3">
-                            AUTHORIZED APPLE RESELLER
-                            <span className="position-absolute start-50 translate-middle-x" style={{ bottom: 0, width: '60px', height: '3px', background: '#007bff' }}></span>
-                        </h2>
-                        <p className="text-muted mb-4">
-                            Gigahertz is an Apple Premium Reseller offering the complete range of Apple products along with premium accessories.
-                        </p>
-                        <img
-                            src="https://www.gigahertz.com.ph/cdn/shop/files/apple-authorised-reseller.png?v=1653367071"
-                            alt="Apple Authorized Reseller"
-                            className="img-fluid mb-4"
-                            style={{ maxHeight: '80px' }}
-                        />
+            {/* Category Navigation */}
+            <div className="container mt-4">
+                <div className="row">
+                    {productCategories.map((category, index) => (
+                        <div key={index} className="col-6 col-md-3 col-lg-2 mb-3">
+                            <div className="h-100 category-card">
+                                <div className="card-body category-image mx-auto mb-2">
+                                    <img
+                                        src={category.image}
+                                        alt={category.name}
+                                        className="img-fluid"
+                                        style={{ objectFit: "contain" }}
+                                        onClick={() => navigate(category.link)}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Promotions Banner */}
+            <div className="container mt-4">
+                <div className="row">
+                    <div className="col-12 col-md-8 mb-3">
+                        <div className="promo-banner">
+                            <img
+                                src="https://cdn.shopify.com/s/files/1/0564/4694/3414/files/gaming_laptop.jpg?v=1721633832&width=1280"
+                                alt="Main Promotion Banner"
+                                className="img-fluid w-100 rounded"
+                                style={{ height: "auto", objectFit: "cover" }}
+                                onClick={() => navigate('/laptops/gaming-laptops')}
+                            />
+                        </div>
+                    </div>
+                    <div className="col-12 col-md-4 mb-3">
+                        <div className="promo-banner">
+                            <img
+                                src="https://cdn.shopify.com/s/files/1/0564/4694/3414/files/MAINSTREAM_LAPTOP_1.jpg?v=1722394990&width=1280"
+                                alt="Secondary Promotion"
+                                className="img-fluid w-100 rounded"
+                                style={{ height: "100%", objectFit: "cover" }}
+                                onClick={() => navigate('/laptops/mainstream-laptops')}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* Custom CSS for hover effects */}
-            <style jsx>{`
-                .card:hover {
-                    transform: translateY(-5px) !important;
-                    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
-                }
-                
-                .card:hover .card-img-top,
-                .card:hover img.transition-transform {
-                    transform: scale(1.05);
-                }
-                
-                .card:hover .opacity-0 {
-                    opacity: 1 !important;
-                    transform: translateX(0) !important;
-                }
-                
-                .text-shadow {
-                    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-                }
-                
-                .btn-light:hover .text-muted {
-                    color: #007bff !important;
-                }
-                
-                a.transition-transform:hover {
-                    transform: translateY(-5px);
-                }
-            `}</style>
+            {/* Product Tabs */}
+            <div className="container mt-5">
+                <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h2 className="mb-0">Products</h2>
+                    <ul className="nav nav-tabs border-0">
+                        {tabsContent.map((tab, index) => (
+                            <li key={tab.id} className="nav-item">
+                                <button
+                                    className={`nav-link ${activeTabIndex === index ? 'active fw-bold' : ''}`}
+                                    onClick={() => setActiveTabIndex(index)}
+                                >
+                                    {tab.name}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+
+                <div className="tab-content">
+                    <div className="tab-pane active">
+                        <div className="relative w-full">
+                            {/* Container */}
+                            <div className="position-relative">
+                                {/* Container */}
+                                <div
+                                    ref={containerRef}
+                                    className="d-flex overflow-hidden py-3 px-2"
+                                    style={{ scrollBehavior: 'smooth' }}
+                                >
+                                    {products.map((product) => {
+
+                                        // Calculate the discount percentage
+                                        const originalPrice = product.originalPrice || (product.price * 1.25);
+                                        const savings = originalPrice - product.price;
+                                        return (
+                                            product.stocks > 0 &&
+                                            <div key={product.id} className="product-card mx-2" style={{ minWidth: '240px', flexShrink: 0 }}>
+                                                <div className="card h-100 shadow-sm">
+                                                    {/* Product image with badges */}
+                                                    <div className="position-relative">
+                                                        <img
+                                                            src={product.categoryId == 43 ? "https://www.gigahertz.com.ph/cdn/shop/files/asus-proart-studiobook-one-w590g6t-hi004r-asus-gigahertz-768947.jpg?v=1726731415&width=600" : "https://www.gigahertz.com.ph/cdn/shop/files/DESKTOP-ASUSROGASUG15CF-1270KF017WSG15CFI7-12700KF32GBDDR341TBSSDRTX3060Ti8GBDDR6WIN11s.jpg?v=1727854064&width=600"}
+                                                            alt={product.name}
+                                                            className="card-img-top p-2"
+                                                            style={{ height: '240px', objectFit: 'contain' }}
+                                                        />
+                                                        </div>
+
+                                                        {/* Product details */}
+                                                        <div className="card-body d-flex flex-column">
+                                                            {/* Product name */}
+                                                            <h6 className="card-title text-primary fw-bold" title={product.fullName}>
+                                                                {product.name}
+                                                            </h6>
+
+                                                            <div className="mt-auto">
+                                                                {/* Price section */}
+                                                                <div className="mb-2">
+                                                                    <h5 className="fw-bold text-danger mb-0">PHP{formatPriceWithoutSymbol(savings)}</h5>
+                                                                    <small className="text-decoration-line-through text-muted">PHP{formatPriceWithoutSymbol(originalPrice)}</small>
+                                                                </div>
+
+                                                                {/* Add to cart button */}
+                                                            <button className="btn btn-primary w-100">
+                                                                Add To Cart
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Navigation arrows */}
+                                <button
+                                    onClick={scrollToPrev}
+                                    className={`btn btn-secondary rounded-circle position-absolute start-0 top-50 translate-middle-y shadow-sm d-flex align-items-center justify-content-center ${currentIndex === 0 ? 'opacity-50' : ''}`}
+                                    disabled={currentIndex === 0}
+                                    style={{ zIndex: 1, height: '40px', width: '45px' }}
+                                >
+                                    <ChevronLeft size={25} className="text-light" />
+                                </button>
+
+                                <button
+                                    onClick={scrollToNext}
+                                    className={`btn btn-secondary rounded-circle position-absolute end-0 top-50 translate-middle-y shadow-lg d-flex align-items-center justify-content-center ${currentIndex === products.length - 1 ? 'opacity-50' : ''}`}
+                                    disabled={currentIndex === products.length - 1}
+                                    style={{ zIndex: 1, height: '40px', width: '45px' }}
+                                >
+                                    <ChevronRight className="text-light" />
+                                </button>
+                            </div>
+                        </div>
+                        <div className="text-center mt-2 mb-5">
+                            <button className="btn btn-outline-primary px-4 view-more-btn"
+                                onClick={() => { navigate('laptops/gaming-laptops') }}>View More</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Secondary Banner */}
+            <div className="container mt-4 mb-5 d-flex">
+                <div className="secondary-banner">
+                    <img
+                        src="https://cdn.shopify.com/s/files/1/0564/4694/3414/files/PERIPHERALS_HOME_PAGE.jpg?v=1721706270&width=1280"
+                        alt="Secondary Promotion Banner"
+                        className="img-fluid"
+                        style={{ height: "auto", objectFit: "cover" }}
+                        onClick={() => navigate('/components/sodimm-ram')}
+                    />
+                </div>
+                <div className="secondary-banner">
+                    <img
+                        src="https://cdn.shopify.com/s/files/1/0564/4694/3414/files/NEW_ARRIVAL_b5a285e8-5828-48b4-84fa-df9cb2a3441a.jpg?v=1721715753&width=1280"
+                        alt="Secondary Promotion Banner"
+                        className="img-fluid"
+                        style={{ height: "auto", objectFit: "cover" }}
+                        onClick={() => navigate('/desktops/gaming-entry')}
+                    />
+                </div>
+                <div className="secondary-banner">
+                    <img
+                        src="https://cdn.shopify.com/s/files/1/0564/4694/3414/files/FREEBIES_BANNER_1.jpg?v=1721706270&width=1280"
+                        alt="Secondary Promotion Banner"
+                        className="img-fluid"
+                        style={{ height: "auto", objectFit: "cover" }}
+                        onClick={() => navigate('/laptops/gaming-laptops')}
+                    />
+                </div>
+            </div>
+
+            {/* Featured Brands */}
+            <div className="container mt-5 mb-5">
+                <h3 className="mb-4 fw-bold">Featured Brands</h3>
+                <div className="row">
+                    {featuredBrands.map((brand, index) => (
+                        <div key={index} className="col-6 col-md-3 mb-5">
+                            <img
+                                src={brand.image}
+                                alt={brand.name}
+                                className="img-fluid card h-100 border-0 brand-card rounded"
+                                style={{ height: "100px", objectFit: "contain" }}
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <img src="https://cdn.shopify.com/s/files/1/0564/4694/3414/files/SERVICE_CENTER_1_7dfde258-41e7-4912-946c-b51eec35389e-pfti.jpg?v=1740117446&width=1280" alt="Service Center" className="img-fluid w-100 mb-5" style={{ height: "auto", objectFit: "cover" }} />
+
+            <img src="https://cdn.shopify.com/s/files/1/0564/4694/3414/files/LOGOS_BANKS.jpg?v=1743656750&width=1280" alt="Payment Options" className="img-fluid w-100 mb-5" style={{ height: "auto", objectFit: "cover" }} />
         </div>
     );
-};
+}
 
 export default HomePage;

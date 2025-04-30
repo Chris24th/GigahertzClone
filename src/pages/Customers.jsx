@@ -102,8 +102,7 @@ const CustomerPage = () => {
                 );
                 setCustomers(updatedCustomers);
             }
-
-            handleCloseModal();
+            window.location.reload();
             setError(null);
         } catch (err) {
             setError(`Failed to ${formMode === 'create' ? 'create' : 'update'} customer. Please try again.`);

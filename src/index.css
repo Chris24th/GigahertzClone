@@ -103,11 +103,6 @@ text-primary {
   background-color: transparent !important;
 }
 
-.active {
-  color: #fff !important;
-  background-color: #0008F1 !important;
-}
-
 .active-dropdown-item {
   color: #00BADB !important;
 }
